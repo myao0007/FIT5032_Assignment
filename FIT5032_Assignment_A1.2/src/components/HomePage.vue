@@ -9,9 +9,9 @@
                     <!-- full-width nav row; never collapses -->
                     <ul class="navbar-nav flex-row flex-nowrap w-100 justify-content-between">
                         <!-- using flex-nowrap + between -->
-                        <li class="nav-item flex-fill text-center"> 
+                        <li class="nav-item flex-fill text-center">
                             <button class="nav-link btn-linklike w-100" @click="onPodcasts">Podcasts</button>
-                            
+
                         </li>
 
                         <li class="nav-item flex-fill text-center">
@@ -42,11 +42,11 @@
                             <button class="nav-link btn-linklike w-100" @click="onAbout">About Policies</button>
                         </li>
 
-                        
+
                         <li class="nav-item flex-fill text-center">
-                            
+
                             <button class="nav-link btn-login w-100" data-bs-toggle="modal"
-                                data-bs-target="#authModal">Login</button> 
+                                data-bs-target="#authModal">Login</button>
                         </li>
                     </ul>
                 </div>
@@ -134,15 +134,16 @@
                             <div class="mb-3">
                                 <label class="form-label">Password</label>
                                 <input type="password" class="form-control" v-model="login.password"
-                                    :class="{ 'is-invalid': loginErr.password }" placeholder="At least 8 characters"
+                                    :class="{ 'is-invalid': loginErr.password }" 
                                     required>
                                 <div class="invalid-feedback" v-if="loginErr.password">{{ loginErr.password }}</div>
                             </div>
                             <button class="btn btn-primary w-100" type="submit">Sign in</button>
-                            <p class="text-success mt-3" v-if="loginOK">Login form is valid ✅ (demo)</p>
+                            <p class="text-success mt-3" v-if="loginOK">Login form is valid  (demo)</p>
                         </form>
 
                         <!-- Register -->
+                
                         <form v-else @submit.prevent="onRegister" novalidate>
                             <div class="mb-3">
                                 <label class="form-label">Email</label>
@@ -150,27 +151,46 @@
                                     :class="{ 'is-invalid': regErr.email }" placeholder="you@example.com" required>
                                 <div class="invalid-feedback" v-if="regErr.email">{{ regErr.email }}</div>
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Password</label>
                                 <input type="password" class="form-control" v-model="reg.password"
                                     :class="{ 'is-invalid': regErr.password }"
-                                    placeholder="At least 8 chars, mixed case & number" required>
+                                    required>
+
+                                <!-- 密码规则提示 -->
+                                <ul class="password-rules mt-2">
+                                    <li :class="passwordLengthClass">8-32 characters</li>
+                                    <li :class="passwordCaseClass">At least one uppercase and one lowercase</li>
+                                    <li :class="passwordDigitClass">At least one number (0-9)</li>
+                                </ul>
+
                                 <div class="invalid-feedback" v-if="regErr.password">{{ regErr.password }}</div>
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Confirm Password</label>
                                 <input type="password" class="form-control" v-model="reg.confirm"
-                                    :class="{ 'is-invalid': regErr.confirm }" placeholder="Repeat your password"
+                                    :class="{ 'is-invalid': regErr.confirm }" 
                                     required>
                                 <div class="invalid-feedback" v-if="regErr.confirm">{{ regErr.confirm }}</div>
                             </div>
+
                             <button class="btn btn-success w-100" type="submit">Create account</button>
-                            <p class="text-success mt-3" v-if="regOK">Saved to localStorage ✅</p>
+
+                           
+                          
                         </form>
+
                     </div>
 
                     <div class="modal-footer">
-                        <small class="text-muted">Modal-based authentication with validation</small>
+                        <small class="text-muted" v-if="activeTab === 'login'">
+                            Don't have an account? Register
+                        </small>
+                        <small class="text-muted" v-else>
+                            Already have an account? Login
+                        </small>
                     </div>
                 </div>
             </div>
@@ -179,9 +199,9 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 
-/* Nav button stubs */
+/* --- Navigation stubs (demo only) --- */
 function onPodcasts() { alert('Podcasts clicked (stub).') }
 function onLive() { alert('Live clicked (stub).') }
 function onTreeHole() { alert('Tree Hole clicked (stub).') }
@@ -191,44 +211,88 @@ function onCocreation() { alert('Co-creation clicked (stub).') }
 function onProfile() { alert('Profile clicked (stub).') }
 function onAbout() { alert('About+Policies clicked (stub).') }
 
-/* Auth state */
+/* --- Auth state --- */
 const activeTab = ref('login')
+
+/* Login state */
 const login = reactive({ email: '', password: '' })
 const loginErr = reactive({ email: '', password: '' })
 const loginOK = ref(false)
 
+/* Register state */
 const reg = reactive({ email: '', password: '', confirm: '' })
 const regErr = reactive({ email: '', password: '', confirm: '' })
 const regOK = ref(false)
+const regError = ref(false)   // used for ❌ indicator if registration fails
 
-function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) }
+/* Email validation helper */
+function validateEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
+}
 
+/* -------- Login submit -------- */
 function onLogin() {
     loginOK.value = false
     loginErr.email = loginErr.password = ''
+
     if (!login.email) loginErr.email = 'Email is required.'
     else if (!validateEmail(login.email)) loginErr.email = 'Please enter a valid email.'
+
     if (!login.password) loginErr.password = 'Password is required.'
     else if (login.password.length < 8) loginErr.password = 'At least 8 characters.'
-    if (!loginErr.email && !loginErr.password) loginOK.value = true
+
+    if (!loginErr.email && !loginErr.password) {
+        loginOK.value = true
+    }
 }
 
-function onRegister() {
-    regOK.value = false
-    regErr.email = regErr.password = regErr.confirm = ''
+/* -------- Register: live password rules (gray / red / green) -------- */
+const passwordLengthClass = computed(() => {
+    if (!reg.password) return 'neutral'
+    return reg.password.length >= 8 && reg.password.length <= 32 ? 'valid' : 'invalid'
+})
+const passwordCaseClass = computed(() => {
+    if (!reg.password) return 'neutral'
     const hasLower = /[a-z]/.test(reg.password)
     const hasUpper = /[A-Z]/.test(reg.password)
-    const hasDigit = /\d/.test(reg.password)
+    return (hasLower && hasUpper) ? 'valid' : 'invalid'
+})
+const passwordDigitClass = computed(() => {
+    if (!reg.password) return 'neutral'
+    return /\d/.test(reg.password) ? 'valid' : 'invalid'
+})
+
+/* -------- Register submit -------- */
+function onRegister() {
+    regOK.value = false
+    regError.value = false
+    regErr.email = regErr.password = regErr.confirm = ''
+
+    // Email
     if (!reg.email) regErr.email = 'Email is required.'
     else if (!validateEmail(reg.email)) regErr.email = 'Please enter a valid email.'
-    if (!reg.password) regErr.password = 'Password is required.'
-    else if (reg.password.length < 8) regErr.password = 'At least 8 characters.'
-    else if (!(hasLower && hasUpper && hasDigit)) regErr.password = 'Use upper/lowercase and a number.'
+
+    // Password: use rules above
+    if (!reg.password) {
+        regErr.password = 'Password is required.'
+    } else if (
+        passwordLengthClass.value !== 'valid' ||
+        passwordCaseClass.value !== 'valid' ||
+        passwordDigitClass.value !== 'valid'
+    ) {
+        regErr.password = 'Password does not meet all requirements.'
+    }
+
+    // Confirm password
     if (!reg.confirm) regErr.confirm = 'Please confirm your password.'
     else if (reg.confirm !== reg.password) regErr.confirm = 'Passwords do not match.'
+
+    // If all checks pass → save
     if (!regErr.email && !regErr.password && !regErr.confirm) {
         localStorage.setItem('registered_user', JSON.stringify({ email: reg.email }))
         regOK.value = true
+    } else {
+        regError.value = true
     }
 }
 </script>
@@ -334,29 +398,57 @@ body {
 
 /* Hero text block */
 .text-block {
-  max-width: 600px;
-  color: #1f2233; /* 粉色 */
-  font-family: 'Georgia', serif;
+    max-width: 600px;
+    color: #1f2233;
+    font-family: 'Georgia', serif;
 }
 
 
 .she-big {
-  font-size: 3rem;       /* bigger than other words */
-  font-weight: bold;
-  color: #1f2233;
+    font-size: 3rem;
+    /* bigger than other words */
+    font-weight: bold;
+    color: #1f2233;
     margin-right: .3rem;
 }
 
 .she-normal {
-  font-size: 1.8rem;     /* smaller than other */
-  font-weight: normal;
-  color: #1f2233;
+    font-size: 1.8rem;
+    /* smaller than other */
+    font-weight: normal;
+    color: #1f2233;
 }
 
 p {
-  font-size: 1.8rem;
-  font-weight: normal;
-  color: #1f2233;
-  line-height: 1.6;
+    font-size: 1.8rem;
+    font-weight: normal;
+    color: #1f2233;
+    line-height: 1.6;
 }
+
+/* ===== Register password rules ===== */
+.password-rules {
+  list-style: none;
+  padding-left: 0;
+  font-size: 0.9rem;
+  margin: 0.4rem 0 0 0;
+}
+.password-rules li {
+  margin-top: 2px;
+}
+
+/* colors for rules */
+.password-rules .neutral { color: gray; }
+.password-rules .invalid { color: red; }
+.password-rules .valid   { color: green; }
+
+/* ===== Status messages (✔ / ✖) ===== */
+.status {
+  font-size: 0.95rem;
+  margin-top: 0.8rem;
+  font-weight: 500;
+}
+.status.success { color: green; }
+.status.error { color: red; }
+
 </style>
