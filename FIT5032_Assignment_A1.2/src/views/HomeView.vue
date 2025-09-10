@@ -12,6 +12,7 @@
 
     <section class="content-block">
       <div class="container-fluid py-5">
+        <h3 class="text-center mb-4">Welcome, {{ currentUser?.username || 'Guest' }}!</h3>
         <div class="row g-4">
           <div class="col-12 col-md-6 col-xl-4" v-for="i in 3" :key="i">
             <div class="card shadow-sm h-100">
@@ -27,7 +28,19 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const STORAGE_KEY = 'user_profiles'
+const currentUser = ref(null)
+
+onMounted(() => {
+  // 从 localStorage 拿最后一个登录的用户
+  const users = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+  const lastUser = users[users.length - 1] || null
+  currentUser.value = lastUser
+})
+</script>
 
 <style scoped>
 .page-root {
@@ -52,19 +65,19 @@
   max-width: 600px;
   color: #1f2233;
   font-family: 'Georgia', serif;
-  line-height: 1.8;   
+  line-height: 1.8;
 }
 
-.she-big { 
+.she-big {
   font-size: 3rem;
-  font-weight: bold;  
+  font-weight: bold;
   color: #151a4b;
   margin-right: .3rem;
 }
 
 .she-normal {
   font-size: 1.8rem;
-  font-weight: normal; 
+  font-weight: normal;
   color: #151a4b;
 }
 </style>

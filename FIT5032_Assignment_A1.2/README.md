@@ -22,6 +22,25 @@ npm install
 npm run dev
 ```
 
+### Use Firebase Emulator (recommended for restricted networks)
+
+If your console shows errors like "FirebaseError: Failed to get document because the client is offline" during navigation, your network may be blocking access to `*.googleapis.com`.
+
+Run the Firebase Emulator locally and the app will auto-connect in development:
+
+```sh
+# 1) Install the CLI once
+npm i -g firebase-tools
+
+# 2) Start emulators in this repo (Auth:9099, Firestore:8080)
+firebase emulators:start --only auth,firestore --project demo-she --config firebase_emulator/firebase.json
+
+# 3) In another terminal, run Vite dev server
+npm run dev
+```
+
+When running on `localhost`, `src/firebase/config.js` connects to the emulators automatically.
+
 ### Compile and Minify for Production
 
 ```sh
