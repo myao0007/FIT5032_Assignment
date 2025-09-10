@@ -17,13 +17,35 @@
       </ul>
 
 
-      <ul class="auth">
-        <li><router-link to="/login" class="nav-link">Login</router-link></li>
-        <li><router-link to="/register" class="nav-link">Register</router-link></li>
+      <ul class="auth" v-if="!authComputed.isAuthenticated.value">
+        <li><router-link to="/login" class="nav-link" :exact="true">Login</router-link></li>
+        <li><router-link to="/register" class="nav-link" :exact="true">Register</router-link></li>
+      </ul>
+      
+      <ul class="auth" v-else>
+        <li><span class="nav-link user-info">Welcome, {{ authComputed.userEmail.value }}</span></li>
+        <li><button @click="handleLogout" class="nav-link logout-btn">Logout</button></li>
       </ul>
     </div>
   </nav>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router'
+import { authComputed, logout } from '@/store/userAuth.js'
+
+const router = useRouter()
+
+// 登出功能
+const handleLogout = async () => {
+  try {
+    await logout()
+    router.push('/home')
+  } catch (error) {
+    console.error('Logout error:', error)
+  }
+}
+</script>
 
 <style scoped>
 
@@ -78,21 +100,47 @@
 
 
 .nav-link {
-  color: #ffb6c1;
+  color: #ffb6c1 !important;  /* 强制使用纯粉色 */
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
   transition: color .2s ease;
 }
+
 .nav-link:hover {
-  color: #ffd8e6;
+  color: #ffd8e6 !important;  /* 悬停时变浅粉色 */
 }
 
+/* 确保激活状态保持粉色 */
+.router-link-active,
+.router-link-exact-active {
+  color: #ffb6c1 !important;
+}
 
 .brand, .nav-link {
   display: inline-flex;
   align-items: center;
   height: 64px;                
+}
+
+/* 登出按钮样式 */
+.logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.logout-btn:hover {
+  color: #ffd8e6 !important;
+}
+
+/* 用户信息样式 */
+.user-info {
+  color: #ffb6c1 !important;
+  font-weight: 600;
 }
 
 
