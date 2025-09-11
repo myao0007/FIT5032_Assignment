@@ -56,12 +56,18 @@ export const authComputed = {
     isLoading: computed(() => authState.isLoading),
     isAdmin: computed(() => authState.isAdmin),
     userName: computed(() => {
-        if (authState.userProfile) {
-            return authState.userProfile.username || 'User'
-        } else if (authState.user && authState.user.displayName) {
-            return authState.user.displayName
-        }
-        return ''
+        // 优先：用户档案中的 username
+        const profileName = authState.userProfile?.username
+        if (profileName && profileName.trim()) return profileName
+
+        // 其次：Firebase 用户的 displayName
+        const displayName = authState.user?.displayName
+        if (displayName && displayName.trim()) return displayName
+
+        // 兜底：邮箱前缀
+        const email = authState.user?.email || ''
+        const prefix = email.includes('@') ? email.split('@')[0] : ''
+        return prefix || 'User'
     }),
     userEmail: computed(() => {
         return authState.user ? authState.user.email : ''

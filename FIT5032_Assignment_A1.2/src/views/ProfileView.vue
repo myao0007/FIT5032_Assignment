@@ -30,9 +30,7 @@
 
       <p v-else-if="checked" class="text-center text-muted">No user information available.</p>
 
-      <div class="profile-actions">
-        <button class="btn-primary-custom" @click="signOutNow">Sign out</button>
-      </div>
+
     </div>
   </div>
 </template>
@@ -42,7 +40,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { auth, db } from '@/firebase/config'
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore'
-import { signOut } from 'firebase/auth'
+// import { signOut } from 'firebase/auth'
 
 const router = useRouter()
 
@@ -82,10 +80,7 @@ onMounted(async () => {
   }
 })
 
-async function signOutNow() {
-  await signOut(auth)
-  router.replace('/login')
-}
+// 已移除本页 Sign out 按钮，使用右上角全局 Logout
 </script>
 
 <style scoped>

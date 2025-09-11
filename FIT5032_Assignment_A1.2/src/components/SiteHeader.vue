@@ -1,10 +1,10 @@
 <template>
   <nav class="she-navbar fixed-top">
     <div class="nav-inner">
-   
+
       <router-link to="/" class="brand">SHE</router-link>
 
-     
+
       <ul class="menu">
         <li><router-link to="/" class="nav-link">Podcasts</router-link></li>
         <li><router-link to="/live" class="nav-link">Live</router-link></li>
@@ -12,7 +12,7 @@
         <li><router-link to="/discover" class="nav-link">Discover</router-link></li>
         <li><router-link to="/curve" class="nav-link">Emotional Curve</router-link></li>
         <li><router-link to="/cocreation" class="nav-link">Co-Creation</router-link></li>
-        <li><router-link to="/profile" class="nav-link">Profile</router-link></li>
+        <li><router-link to="/profile" class="nav-link">Manage</router-link></li>
         <li><router-link to="/about" class="nav-link">About Policies</router-link></li>
       </ul>
 
@@ -21,7 +21,7 @@
         <li><router-link to="/login" class="nav-link" :exact="true">Login</router-link></li>
         <li><router-link to="/register" class="nav-link" :exact="true">Register</router-link></li>
       </ul>
-      
+
       <ul class="auth" v-else>
         <li><span class="nav-link user-info">Welcome, {{ authComputed.userEmail.value }}</span></li>
         <li><button @click="handleLogout" class="nav-link logout-btn">Logout</button></li>
@@ -48,12 +48,11 @@ const handleLogout = async () => {
 </script>
 
 <style scoped>
-
 .she-navbar {
   background: #151a4b;
-  height: 64px;                
+  height: 64px;
   display: flex;
-  align-items: center;          
+  align-items: center;
   padding: 0 16px;
 }
 
@@ -61,7 +60,7 @@ const handleLogout = async () => {
 .nav-inner {
   width: 100%;
   display: flex;
-  align-items: center;         
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
@@ -72,17 +71,17 @@ const handleLogout = async () => {
   font-weight: 800;
   color: #ffb6c1;
   text-decoration: none;
-  line-height: 1;              
+  line-height: 1;
   white-space: nowrap;
 }
 
 
 .menu {
-  flex: 1;                     
+  flex: 1;
   display: flex;
-  justify-content: center;      
-  align-items: center;          
-  gap: 3rem;                   
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -91,8 +90,8 @@ const handleLogout = async () => {
 
 .auth {
   display: flex;
-  align-items: center;         
-  gap: 1.5rem;                  
+  align-items: center;
+  gap: 1.5rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -100,7 +99,8 @@ const handleLogout = async () => {
 
 
 .nav-link {
-  color: #ffb6c1 !important;  /* 强制使用纯粉色 */
+  color: #ffb6c1 !important;
+  /* 强制使用纯粉色 */
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
@@ -108,7 +108,8 @@ const handleLogout = async () => {
 }
 
 .nav-link:hover {
-  color: #ffd8e6 !important;  /* 悬停时变浅粉色 */
+  color: #ffd8e6 !important;
+  /* 悬停时变浅粉色 */
 }
 
 /* 确保激活状态保持粉色 */
@@ -117,10 +118,11 @@ const handleLogout = async () => {
   color: #ffb6c1 !important;
 }
 
-.brand, .nav-link {
+.brand,
+.nav-link {
   display: inline-flex;
   align-items: center;
-  height: 64px;                
+  height: 64px;
 }
 
 /* 登出按钮样式 */
@@ -142,6 +144,4 @@ const handleLogout = async () => {
   color: #ffb6c1 !important;
   font-weight: 600;
 }
-
-
 </style>
