@@ -7,12 +7,12 @@
         <span class="she-normal">Her words like warm rain,</span><br />
         <span class="she-normal">Healing hearts quietly,</span><br />
         <span class="she-normal">Easing unspoken pain.</span>
+        <h3 class="welcome-title mt-5">Welcome, {{ userName || 'Guest' }}!</h3>
       </div>
     </section>
 
     <section class="content-block">
       <div class="container-fluid py-5">
-        <h3 class="text-center mb-4">Welcome, {{ currentUser?.username || 'Guest' }}!</h3>
         <div class="row g-4">
           <div class="col-12 col-md-6 col-xl-4" v-for="i in 3" :key="i">
             <div class="card shadow-sm h-100">
@@ -29,16 +29,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, watchEffect } from 'vue'
+import { authComputed } from '@/store/userAuth.js'
+import { auth } from '@/firebase/config.js'
 
-const STORAGE_KEY = 'user_profiles'
-const currentUser = ref(null)
-
-onMounted(() => {
-  // 从 localStorage 拿最后一个登录的用户
-  const users = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
-  const lastUser = users[users.length - 1] || null
-  currentUser.value = lastUser
+// 优先顺序：store.profile.username → store.user.displayName → auth.currentUser.displayName → 邮箱前缀
+const userName = ref('')
+watchEffect(() => {
+  const storeName = authComputed.userName.value || ''
+  const liveUser = auth.currentUser
+  const liveName = liveUser?.displayName || liveUser?.email?.split('@')[0] || ''
+  userName.value = storeName || liveName
 })
 </script>
 
@@ -66,6 +67,14 @@ onMounted(() => {
   color: #1f2233;
   font-family: 'Georgia', serif;
   line-height: 1.8;
+}
+
+.welcome-title {
+  margin-top: 2rem;
+  text-align: center;
+  color: #151a4b;
+  font-size: 2.4rem;
+  font-weight: 800;
 }
 
 .she-big {

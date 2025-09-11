@@ -46,32 +46,32 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { loginUser } from '@/firebase/auth.js'
+import { loginUser, getUserProfile } from '@/firebase/auth.js'
 import { authComputed } from '@/store/userAuth.js'
 
 const router = useRouter()
 
 // Check if there is already a login session
 onMounted(() => {
-    // 检查Firebase认证状态
-    if (authComputed.isAuthenticated.value) {
-        // 根据用户角色重定向
-        if (authComputed.isAdmin.value) {
-            router.push('/profile')
-        } else {
-            router.push('/home')
-        }
+  // 检查Firebase认证状态
+  if (authComputed.isAuthenticated.value) {
+    // 根据用户角色重定向
+    if (authComputed.isAdmin.value) {
+      router.push('/profile')
+    } else {
+      router.push('/home')
     }
+  }
 })
 
 const formData = ref({
-    email: '',
-    password: ''
+  email: '',
+  password: ''
 })
 
 const errors = ref({
-    email: null,
-    password: null
+  email: null,
+  password: null
 })
 
 const okMsg = ref('')
@@ -80,83 +80,81 @@ const isLoading = ref(false)
 const showPassword = ref(false)
 
 const validateEmailInput = () => {
-    const email = formData.value.email
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const email = formData.value.email
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-    if (!email) {
-        errors.value.email = 'Email is required.'
-    } else if (!emailPattern.test(email)) {
-        errors.value.email = 'Please enter a valid email.'
-    } else {
-        errors.value.email = null
-    }
+  if (!email) {
+    errors.value.email = 'Email is required.'
+  } else if (!emailPattern.test(email)) {
+    errors.value.email = 'Please enter a valid email.'
+  } else {
+    errors.value.email = null
+  }
 }
 
 const validatePassword = () => {
-    const password = formData.value.password
+  const password = formData.value.password
 
-    if (!password) {
-        errors.value.password = 'Password is required.'
-    } else if (password.length < 8) {
-        errors.value.password = 'Password must be at least 8 characters.'
-    } else {
-        errors.value.password = null
-    }
+  if (!password) {
+    errors.value.password = 'Password is required.'
+  } else if (password.length < 8) {
+    errors.value.password = 'Password must be at least 8 characters.'
+  } else {
+    errors.value.password = null
+  }
 }
 
 const submitForm = async () => {
-    // 清空错误和消息
-    errors.value.email = errors.value.password = ''
-    errorMsg.value = ''
-    okMsg.value = ''
+  // 清空错误和消息
+  errors.value.email = errors.value.password = ''
+  errorMsg.value = ''
+  okMsg.value = ''
 
-    // 前端校验
-    validateEmailInput()
-    validatePassword()
-    if (errors.value.email || errors.value.password) return
+  // 前端校验
+  validateEmailInput()
+  validatePassword()
+  if (errors.value.email || errors.value.password) return
 
-    isLoading.value = true
+  isLoading.value = true
 
-    try {
-        console.log('Login submitted:', formData.value)
+  try {
+    console.log('Login submitted:', formData.value)
 
-        // 使用Firebase认证
-        const result = await loginUser(formData.value.email, formData.value.password)
+    // 使用Firebase认证
+    const result = await loginUser(formData.value.email, formData.value.password)
 
-        if (result.success) {
-            console.log('User logged in:', result.user)
-            okMsg.value = 'Login successful! Redirecting...'
-
-            // 等待状态更新后重定向
-            setTimeout(() => {
-                if (authComputed.isAdmin.value) {
-                    router.push('/profile')
-                } else {
-                    router.push('/home')
-                }
-            }, 1500)
-        } else {
-            // 根据错误类型显示不同的错误消息
-            if (result.error.includes('user-not-found')) {
-                errorMsg.value = 'No account found with this email.'
-            } else if (result.error.includes('wrong-password') || result.error.includes('invalid-credential')) {
-                errorMsg.value = 'Invalid email or password.'
-            } else if (result.error.includes('too-many-requests')) {
-                errorMsg.value = 'Too many attempts. Please try again later.'
-            } else {
-                errorMsg.value = result.error || 'Login failed. Please try again.'
-            }
-        }
-    } catch (error) {
-        console.error('Login error:', error)
-        errorMsg.value = 'An unexpected error occurred. Please try again.'
-    } finally {
-        isLoading.value = false
+    if (result.success) {
+      console.log('User logged in:', result.user)
+      okMsg.value = 'Login successful! Redirecting...'
+      // 简单：登录成功后读取角色再决定跳转
+      let role = 'user'
+      try {
+        const profile = await getUserProfile(result.user.uid)
+        if (profile.success) role = profile.data.role || 'user'
+      } catch (e) { }
+      router.replace(role === 'admin' ? '/profile' : '/home')
+    } else {
+      // 根据错误类型显示不同的错误消息
+      if (result.error.includes('user-not-found')) {
+        errorMsg.value = 'No account found with this email.'
+      } else if (result.error.includes('wrong-password') || result.error.includes('invalid-credential')) {
+        errorMsg.value = 'Invalid email or password.'
+      } else if (result.error.includes('too-many-requests')) {
+        errorMsg.value = 'Too many attempts. Please try again later.'
+      } else {
+        errorMsg.value = result.error || 'Login failed. Please try again.'
+      }
     }
+  } catch (error) {
+    console.error('Login error:', error)
+    errorMsg.value = 'An unexpected error occurred. Please try again.'
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const togglePasswordVisibility = () => {
-    showPassword.value = !showPassword.value
+  showPassword.value = !showPassword.value
 }
 </script>
 

@@ -29,13 +29,13 @@ export const registerUser = async (userData) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password)
         const user = userCredential.user
 
-        // Update user display name
-        await updateProfile(user, {
-            displayName: username
-        })
+        // Update user display name (best-effort)
+        try {
+            await updateProfile(user, { displayName: username })
+        } catch (_) {}
 
-        // Send email verification
-        await sendEmailVerification(user)
+        // Fire-and-forget: email verification，不阻塞注册流程
+        try { sendEmailVerification(user) } catch (_) {}
 
         // Calculate role: admin if email is admin@admin.com and password is 1234
         let role = 'user'
@@ -43,17 +43,20 @@ export const registerUser = async (userData) => {
             role = 'admin'
         }
 
-        // Save additional user information to Firestore
-        await setDoc(doc(db, 'users', user.uid), {
-            username,
-            email,
-            dob,
-            role,
-            createdAt: new Date().toISOString(),
-            emailVerified: false
-        })
+        // Fire-and-forget: 保存扩展信息到 Firestore，不阻塞注册流程
+        try {
+            setDoc(doc(db, 'users', user.uid), {
+                username,
+                email,
+                dob,
+                role,
+                createdAt: new Date().toISOString(),
+                emailVerified: false
+            })
+        } catch (_) {}
 
-        return { success: true, user }
+        // 立即返回，让前端尽快跳转
+        return { success: true, user, role }
     } catch (error) {
         return { success: false, error: error.message }
     }

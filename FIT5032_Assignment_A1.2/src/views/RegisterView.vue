@@ -26,8 +26,8 @@
         <div class="mb-3">
           <label class="form-label">Date of Birth</label>
           <div class="input-group date-picker-wrapper">
-            <input type="text" class="form-control" v-model="formData.dob" placeholder="dd/mm/yyyy" @input="formatDateInput"
-              :class="{ 'is-invalid': errors.dob }" maxlength="10" required />
+            <input type="text" class="form-control" v-model="formData.dob" placeholder="dd/mm/yyyy"
+              @input="formatDateInput" :class="{ 'is-invalid': errors.dob }" maxlength="10" required />
             <button type="button" class="btn btn-outline-secondary" @click="openDatePicker">
               <i class="bi bi-calendar3"></i>
             </button>
@@ -59,8 +59,9 @@
         <div class="mb-3">
           <label class="form-label">Confirm Password</label>
           <div class="input-group">
-            <input :type="showConfirmPassword ? 'text' : 'password'" class="form-control" v-model="formData.confirmPassword"
-              @input="validateConfirmPassword" :class="{ 'is-invalid': errors.confirmPassword }" required />
+            <input :type="showConfirmPassword ? 'text' : 'password'" class="form-control"
+              v-model="formData.confirmPassword" @input="validateConfirmPassword"
+              :class="{ 'is-invalid': errors.confirmPassword }" required />
             <button type="button" class="btn btn-outline-secondary" @click="showConfirmPassword = !showConfirmPassword">
               <i :class="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
             </button>
@@ -95,30 +96,30 @@ const router = useRouter()
 
 // Check if user is already logged in
 onMounted(() => {
-    if (authComputed.isAuthenticated.value) {
-        // If already logged in, redirect to appropriate page
-        if (authComputed.isAdmin.value) {
-            router.push('/profile')
-        } else {
-            router.push('/home')
-        }
+  if (authComputed.isAuthenticated.value) {
+    // If already logged in, redirect to appropriate page
+    if (authComputed.isAdmin.value) {
+      router.push('/profile')
+    } else {
+      router.push('/home')
     }
+  }
 })
 
 const formData = ref({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    dob: ''
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  dob: ''
 })
 
 const errors = ref({
-    username: null,
-    email: null,
-    password: null,
-    confirmPassword: null,
-    dob: null
+  username: null,
+  email: null,
+  password: null,
+  confirmPassword: null,
+  dob: null
 })
 
 const okMsg = ref('')
@@ -142,14 +143,14 @@ const handleDateChange = (e) => {
 // 格式化日期输入，自动添加斜杠
 const formatDateInput = (event) => {
   let value = event.target.value.replace(/\D/g, '') // 只保留数字
-  
+
   if (value.length >= 2) {
     value = value.substring(0, 2) + '/' + value.substring(2)
   }
   if (value.length >= 5) {
     value = value.substring(0, 5) + '/' + value.substring(5, 9)
   }
-  
+
   formData.value.dob = value
   validateDob()
 }
@@ -180,29 +181,29 @@ const validateConfirmPassword = () => {
 }
 const validateDob = () => {
   const dob = formData.value.dob
-  
+
   if (!dob) {
     errors.value.dob = 'Date of Birth is required.'
     return
   }
-  
+
   // 检查日期格式 (dd/mm/yyyy)
   const datePattern = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
   const match = dob.match(datePattern)
-  
+
   if (!match) {
     errors.value.dob = 'Please enter date in dd/mm/yyyy format.'
     return
   }
-  
+
   const day = parseInt(match[1], 10)
   const month = parseInt(match[2], 10)
   const year = parseInt(match[3], 10)
-  
+
   // 验证日期有效性
   const date = new Date(year, month - 1, day)
   const today = new Date()
-  
+
   if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
     errors.value.dob = 'Please enter a valid date.'
   } else if (date >= today) {
@@ -244,14 +245,10 @@ const register = async () => {
       console.log('User registered:', result.user)
       okMsg.value = 'Account created successfully! Redirecting...'
 
-      // 等待状态更新后重定向
-      setTimeout(() => {
-        if (authComputed.isAdmin.value) {
-          router.push('/profile')
-        } else {
-          router.push('/home')
-        }
-      }, 1500)
+      // 成功后立即停止加载并立即跳转
+      isLoading.value = false
+      const target = (result.role === 'admin') ? '/profile' : '/home'
+      router.replace(target)
     } else {
       // 根据错误类型显示不同的错误消息
       if (result.error.includes('email-already-in-use')) {
@@ -273,11 +270,11 @@ const register = async () => {
 }
 
 const togglePasswordVisibility = () => {
-    showPassword.value = !showPassword.value
+  showPassword.value = !showPassword.value
 }
 
 const toggleConfirmPasswordVisibility = () => {
-    showConfirmPassword.value = !showConfirmPassword.value
+  showConfirmPassword.value = !showConfirmPassword.value
 }
 </script>
 
