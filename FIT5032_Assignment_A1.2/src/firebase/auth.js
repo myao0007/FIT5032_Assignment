@@ -34,7 +34,7 @@ export const registerUser = async (userData) => {
             await updateProfile(user, { displayName: username })
         } catch (_) {}
 
-        // Fire-and-forget: email verification，不阻塞注册流程
+        // Fire-and-forget: email verification, non-blocking registration
         try { sendEmailVerification(user) } catch (_) {}
 
         // Calculate role: admin if email is admin@admin.com and password is 1234
@@ -43,7 +43,7 @@ export const registerUser = async (userData) => {
             role = 'admin'
         }
 
-        // Fire-and-forget: 保存扩展信息到 Firestore，不阻塞注册流程
+        // Fire-and-forget: save extended info to Firestore, non-blocking registration
         try {
             setDoc(doc(db, 'users', user.uid), {
                 username,
@@ -55,7 +55,7 @@ export const registerUser = async (userData) => {
             })
         } catch (_) {}
 
-        // 立即返回，让前端尽快跳转
+        // Return immediately to let frontend redirect quickly
         return { success: true, user, role }
     } catch (error) {
         return { success: false, error: error.message }

@@ -53,9 +53,9 @@ const router = useRouter()
 
 // Check if there is already a login session
 onMounted(() => {
-  // 检查Firebase认证状态
+  // Check Firebase authentication state
   if (authComputed.isAuthenticated.value) {
-    // 根据用户角色重定向
+    // Redirect based on user role
     if (authComputed.isAdmin.value) {
       router.push('/profile')
     } else {
@@ -105,12 +105,12 @@ const validatePassword = () => {
 }
 
 const submitForm = async () => {
-  // 清空错误和消息
+  // Clear errors and messages
   errors.value.email = errors.value.password = ''
   errorMsg.value = ''
   okMsg.value = ''
 
-  // 前端校验
+  // Frontend validation
   validateEmailInput()
   validatePassword()
   if (errors.value.email || errors.value.password) return
@@ -120,13 +120,13 @@ const submitForm = async () => {
   try {
     console.log('Login submitted:', formData.value)
 
-    // 使用Firebase认证
+    // Use Firebase authentication
     const result = await loginUser(formData.value.email, formData.value.password)
 
     if (result.success) {
       console.log('User logged in:', result.user)
       okMsg.value = 'Login successful! Redirecting...'
-      // 简单：登录成功后读取角色再决定跳转
+      // Simple: read role after successful login to decide redirect
       let role = 'user'
       try {
         const profile = await getUserProfile(result.user.uid)
@@ -134,7 +134,7 @@ const submitForm = async () => {
       } catch (e) { }
       router.replace(role === 'admin' ? '/profile' : '/home')
     } else {
-      // 根据错误类型显示不同的错误消息
+      // Display different error messages based on error type
       if (result.error.includes('user-not-found')) {
         errorMsg.value = 'No account found with this email.'
       } else if (result.error.includes('wrong-password') || result.error.includes('invalid-credential')) {
@@ -160,7 +160,7 @@ const togglePasswordVisibility = () => {
 
 
 <style scoped>
-/* 背景 */
+/* Background */
 .auth-bg {
   --nav-h: 64px;
   min-height: calc(100vh - var(--nav-h));
@@ -172,7 +172,7 @@ const togglePasswordVisibility = () => {
   background: linear-gradient(135deg, #ffd8e6, #ffb6c1);
 }
 
-/* 卡片 */
+/* Card */
 .signup-card {
   width: 100%;
   max-width: 520px;
@@ -193,65 +193,65 @@ const togglePasswordVisibility = () => {
   color: #262c67;
 }
 
-/* 表单宽度（让输入框看起来不那么长） */
+/* Form width (make input fields look less long) */
 .signup-card form {
   max-width: 360px;
-  /* ← 原来 100%/很长；现在更协调 */
+  /* ← Originally 100%/very long; now more coordinated */
   margin: 0 auto;
 }
 
-/* 输入框：统一高度与圆角 */
+/* Input fields: unified height and rounded corners */
 .form-control {
   width: 100%;
   height: 50px;
-  /* 统一高度 */
+  /* Unified height */
   padding: 10px 14px;
-  /* 视觉舒适的内边距 */
+  /* Visually comfortable padding */
   border-radius: 10px !important;
-  /* 和你的整体风格一致 */
+  /* Consistent with your overall style */
   font-size: 1rem;
   box-shadow: none;
 }
 
-/* 输入组中的输入框圆角处理 */
+/* Input group input field rounded corner handling */
 .input-group .form-control {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 
-/* 输入组中的按钮圆角处理 */
+/* Input group button rounded corner handling */
 .input-group .btn {
   border-top-right-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
   height: 50px;
-  /* 确保和输入框同高 */
+  /* Ensure same height as input field */
 }
 
-/* 自定义密码可见性按钮样式 */
+/* Custom password visibility button styles */
 .input-group .btn-outline-secondary {
   border-color: #ced4da !important;
-  /* 使用与输入框相同的边框颜色 */
+  /* Use same border color as input field */
   color: #6c757d !important;
-  /* 灰色图标 */
+  /* Gray icon */
   background-color: transparent !important;
 }
 
 .input-group .btn-outline-secondary:hover {
   background-color: #f8f9fa !important;
-  /* 浅灰色悬停背景 */
+  /* Light gray hover background */
   border-color: #ced4da !important;
   color: #6c757d !important;
 }
 
-/* 在验证错误状态下保持按钮样式 */
+/* Maintain button style in validation error state */
 .input-group .form-control.is-invalid+.btn-outline-secondary {
   border-color: #dc3545 !important;
-  /* 错误状态下的边框颜色 */
+  /* Border color in error state */
   border-left: none;
-  /* 移除左边框，与输入框边框融合 */
+  /* Remove left border, blend with input field border */
 }
 
-/* 确保验证状态下的圆角 */
+/* Ensure rounded corners in validation state */
 .form-control.is-invalid {
   border-radius: 10px !important;
 }
@@ -261,26 +261,26 @@ const togglePasswordVisibility = () => {
   border-bottom-right-radius: 0 !important;
 }
 
-/* 修改所有输入框的 placeholder 颜色 */
+/* Modify all input field placeholder colors */
 .form-control::placeholder {
   color: #8a8a8a;
-  /* 和提示文字保持一致 */
+  /* Keep consistent with hint text */
   opacity: 1;
-  /* Safari / Firefox 默认会加透明度，强制设为不透明 */
+  /* Safari / Firefox default adds transparency, force to opaque */
 }
 
-/* 输入框 */
+/* Input fields */
 .form-control.is-invalid {
   border-color: #dc3545;
 }
 
-/* 修复输入组中按钮的圆角 */
+/* Fix rounded corners of buttons in input group */
 .input-group .btn {
   border-top-right-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
 }
 
-/* 保持输入框在验证状态下的圆角 */
+/* Maintain input field rounded corners in validation state */
 .input-group .form-control:not(:last-child) {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
@@ -291,14 +291,14 @@ const togglePasswordVisibility = () => {
   font-size: .9rem;
 }
 
-/* 星号 */
+/* Asterisk */
 .form-label::after {
   content: " *";
   color: #dc3545;
   font-weight: 300;
 }
 
-/* 按钮 */
+/* Button */
 .btn-primary-custom {
   display: block;
   min-width: 160px;
@@ -325,13 +325,13 @@ const togglePasswordVisibility = () => {
   transform: none;
 }
 
-/* 加载动画 */
+/* Loading animation */
 .spinner-border-sm {
   width: 1rem;
   height: 1rem;
 }
 
-/* 成功和错误消息样式 */
+/* Success and error message styles */
 .text-success {
   color: #28a745 !important;
   font-weight: 500;

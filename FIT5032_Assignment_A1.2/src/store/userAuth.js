@@ -15,23 +15,23 @@ const authState = reactive({
 export const initAuth = () => {
     authState.isLoading = true
 
-    // 监听Firebase认证状态变化
+    // Listen to Firebase authentication state changes
     onAuthStateChange(async (firebaseUser) => {
         if (firebaseUser) {
-            // 用户已登录
+            // User is logged in
             authState.user = firebaseUser
             authState.isAuthenticated = true
 
-            // 获取用户额外信息
+            // Get additional user information
             const profileResult = await getUserProfile(firebaseUser.uid)
             if (profileResult.success) {
                 authState.userProfile = profileResult.data
             }
 
-            // 检查管理员权限
+            // Check admin permissions
             authState.isAdmin = await isAdmin(firebaseUser)
         } else {
-            // 用户未登录
+            // User is not logged in
             authState.user = null
             authState.userProfile = null
             authState.isAuthenticated = false
@@ -45,7 +45,7 @@ export const initAuth = () => {
 export const logout = async () => {
     const { logoutUser } = await import('@/firebase/auth.js')
     await logoutUser()
-    // Firebase会自动更新状态
+    // Firebase will automatically update state
 }
 
 // Computed properties
@@ -56,15 +56,15 @@ export const authComputed = {
     isLoading: computed(() => authState.isLoading),
     isAdmin: computed(() => authState.isAdmin),
     userName: computed(() => {
-        // 优先：用户档案中的 username
+        // Priority: username from user profile
         const profileName = authState.userProfile?.username
         if (profileName && profileName.trim()) return profileName
 
-        // 其次：Firebase 用户的 displayName
+        // Second: Firebase user displayName
         const displayName = authState.user?.displayName
         if (displayName && displayName.trim()) return displayName
 
-        // 兜底：邮箱前缀
+        // Fallback: email prefix
         const email = authState.user?.email || ''
         const prefix = email.includes('@') ? email.split('@')[0] : ''
         return prefix || 'User'

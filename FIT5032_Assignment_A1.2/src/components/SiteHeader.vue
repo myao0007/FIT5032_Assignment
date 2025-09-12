@@ -6,7 +6,7 @@
 
 
       <ul class="menu">
-        <li><router-link to="/" class="nav-link">Podcasts</router-link></li>
+        <li><router-link to="/podcasts" class="nav-link">Podcasts</router-link></li>
         <li><router-link to="/live" class="nav-link">Live</router-link></li>
         <li><router-link to="/treehole" class="nav-link">Tree Hole</router-link></li>
         <li><router-link to="/discover" class="nav-link">Discover</router-link></li>
@@ -36,7 +36,7 @@ import { authComputed, logout } from '@/store/userAuth.js'
 
 const router = useRouter()
 
-// 登出功能
+// Logout functionality
 const handleLogout = async () => {
   try {
     await logout()

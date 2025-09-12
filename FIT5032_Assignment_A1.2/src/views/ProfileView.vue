@@ -3,12 +3,12 @@
     <div class="profile-card">
       <h2 class="fw-bold mb-4 text-center">User Information List</h2>
 
-      <!-- 非管理员时的提示（极短时间内可能闪一下） -->
+      <!-- Non-admin prompt (may flash briefly) -->
       <p v-if="!isAdmin && checked" class="text-center text-muted">
         You don’t have permission to view this page.
       </p>
 
-      <!-- 管理员列表 -->
+      <!-- Admin list -->
       <table v-else-if="users.length" class="table table-striped">
         <thead>
           <tr>
@@ -46,41 +46,41 @@ const router = useRouter()
 
 const users = ref([])
 const isAdmin = ref(false)
-const checked = ref(false) // 已完成权限检查
+const checked = ref(false) // Permission check completed
 
 onMounted(async () => {
   const current = auth.currentUser
   if (!current) {
-    // 未登录直接回登录页
+    // Not logged in, redirect to login page
     router.replace('/login')
     return
   }
 
   try {
-    // 读取当前用户的角色
+    // Read current user role
     const meSnap = await getDoc(doc(db, 'users', current.uid))
     const me = meSnap.exists() ? meSnap.data() : null
     isAdmin.value = me?.role === 'admin'
     checked.value = true
 
     if (!isAdmin.value) {
-      // 不是管理员：回首页
+      // Not admin: redirect to home
       router.replace('/home')
       return
     }
 
-    // 管理员：拉取所有用户
+    // Admin: fetch all users
     const snap = await getDocs(collection(db, 'users'))
     users.value = snap.docs.map(d => ({ id: d.id, ...d.data() }))
   } catch (e) {
-    // 离线/网络被拦截：给出温和提示并回首页
+    // Offline/network blocked: gentle prompt and redirect to home
     console.warn('[Profile] failed to load due to network:', e?.message || e)
     checked.value = true
     router.replace('/home')
   }
 })
 
-// 已移除本页 Sign out 按钮，使用右上角全局 Logout
+// Removed Sign out button from this page, using top-right global Logout
 </script>
 
 <style scoped>
@@ -138,7 +138,7 @@ onMounted(async () => {
   margin-top: 16px;
 }
 
-/* 复用你按钮风格的类名 */
+/* Reuse your button style class names */
 .btn-primary-custom {
   display: inline-block;
   padding: 10px 18px;

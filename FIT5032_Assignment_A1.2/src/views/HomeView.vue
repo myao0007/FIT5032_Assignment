@@ -33,7 +33,7 @@ import { ref, watchEffect } from 'vue'
 import { authComputed } from '@/store/userAuth.js'
 import { auth } from '@/firebase/config.js'
 
-// 优先顺序：store.profile.username → store.user.displayName → auth.currentUser.displayName → 邮箱前缀
+// Priority order: store.profile.username → store.user.displayName → auth.currentUser.displayName → email prefix
 const userName = ref('')
 watchEffect(() => {
   const storeName = authComputed.userName.value || ''
