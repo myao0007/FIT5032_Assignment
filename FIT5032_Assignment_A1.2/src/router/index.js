@@ -2,6 +2,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import HomeView from '@/views/HomeView.vue'
+import PodcastsView from '@/views/PodcastsView.vue'
+import PodcastDetailView from '@/views/PodcastDetailView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
@@ -12,24 +14,26 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', redirect: '/home' },
+    { path: '/podcasts', name: 'podcasts', component: PodcastsView },
+    { path: '/podcast/:id', name: 'podcast-detail', component: PodcastDetailView },
     { path: '/home', name: 'home', component: HomeView },
 
     { path: '/login', name: 'login', component: LoginView, meta: { guestOnly: true } },
     { path: '/register', name: 'register', component: RegisterView, meta: { guestOnly: true } },
 
-    // 仅管理员可见
+    // Admin only
     { path: '/profile', name: 'profile', component: ProfileView, meta: { requiresAuth: true, requiresAdmin: true } },
 
     { path: '/:pathMatch(.*)*', redirect: '/home' }
   ]
 })
 
-// 初始化认证状态
+// Initialize authentication state
 initAuth()
 
-/** 路由守卫：鉴权 + 角色 */
+/** Route guard: Authentication + Role */
 router.beforeEach(async (to, from, next) => {
-  // 等待认证状态加载完成
+  // Wait for authentication state to load
   while (authComputed.isLoading.value) {
     await new Promise(resolve => setTimeout(resolve, 50))
   }
@@ -37,9 +41,9 @@ router.beforeEach(async (to, from, next) => {
   const isLoggedIn = authComputed.isAuthenticated.value
   const isAdmin = authComputed.isAdmin.value
 
-  // 仅游客可访问（login / register）
+  // Guest only access (login / register)
   if (to.meta.guestOnly && isLoggedIn) {
-    // 如果用户已经登录，重定向到适当的页面
+    // If user is already logged in, redirect to appropriate page
     if (isAdmin) {
       return next({ name: 'profile' })
     } else {
@@ -47,12 +51,12 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  // 需要登录
+  // Requires authentication
   if (to.meta.requiresAuth && !isLoggedIn) {
     return next({ name: 'login', query: { redirect: to.fullPath } })
   }
 
-  // 需要管理员
+  // Requires admin
   if (to.meta.requiresAdmin && !isAdmin) {
     return next({ name: 'home' })
   }

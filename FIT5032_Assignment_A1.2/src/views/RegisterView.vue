@@ -128,7 +128,7 @@ const isLoading = ref(false)
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
-// ===== DatePicker（保留你的交互）=====
+// ===== DatePicker (keep your interactions) =====
 const datePicker = ref(null)
 const openDatePicker = () => { datePicker.value?.showPicker?.() }
 const handleDateChange = (e) => {
@@ -140,9 +140,9 @@ const handleDateChange = (e) => {
   validateDob()
 }
 
-// 格式化日期输入，自动添加斜杠
+// Format date input, automatically add slashes
 const formatDateInput = (event) => {
-  let value = event.target.value.replace(/\D/g, '') // 只保留数字
+  let value = event.target.value.replace(/\D/g, '') // Keep only numbers
 
   if (value.length >= 2) {
     value = value.substring(0, 2) + '/' + value.substring(2)
@@ -156,7 +156,7 @@ const formatDateInput = (event) => {
 }
 
 
-// ===== 校验（保留你的逻辑）=====
+// ===== Validation (keep your logic) =====
 const validateUsername = () => {
   errors.value.username = !formData.value.username ? 'Username is required.' :
     formData.value.username.length > 10 ? 'No more than 10 characters.' : ''
@@ -187,7 +187,7 @@ const validateDob = () => {
     return
   }
 
-  // 检查日期格式 (dd/mm/yyyy)
+  // Check date format (dd/mm/yyyy)
   const datePattern = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
   const match = dob.match(datePattern)
 
@@ -200,7 +200,7 @@ const validateDob = () => {
   const month = parseInt(match[2], 10)
   const year = parseInt(match[3], 10)
 
-  // 验证日期有效性
+  // Validate date validity
   const date = new Date(year, month - 1, day)
   const today = new Date()
 
@@ -214,12 +214,12 @@ const validateDob = () => {
 }
 
 const register = async () => {
-  // 先清空错误和消息
+  // Clear errors and messages first
   errors.value.username = errors.value.email = errors.value.password = errors.value.confirmPassword = errors.value.dob = ''
   errorMsg.value = ''
   okMsg.value = ''
 
-  // 前端二次校验
+  // Frontend secondary validation
   validateUsername()
   validateEmailInput()
   validatePassword()
@@ -245,12 +245,12 @@ const register = async () => {
       console.log('User registered:', result.user)
       okMsg.value = 'Account created successfully! Redirecting...'
 
-      // 成功后立即停止加载并立即跳转
+      // Stop loading immediately after success and redirect immediately
       isLoading.value = false
       const target = (result.role === 'admin') ? '/profile' : '/home'
       router.replace(target)
     } else {
-      // 根据错误类型显示不同的错误消息
+      // Display different error messages based on error type
       if (result.error.includes('email-already-in-use')) {
         errorMsg.value = 'This email is already registered. Please use a different email or try logging in.'
       } else if (result.error.includes('weak-password')) {
