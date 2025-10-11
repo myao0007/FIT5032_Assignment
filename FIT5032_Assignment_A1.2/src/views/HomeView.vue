@@ -46,7 +46,7 @@ watchEffect(() => {
 <style scoped>
 .page-root {
   min-height: 100vh;
-  background: transparent;
+  background: linear-gradient(135deg, #ffd8e6, #ffb6c1);
 }
 
 .hero {

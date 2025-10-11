@@ -10,6 +10,7 @@ import {
 import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { auth, db } from './config.js'
 
+
 // User login
 export const loginUser = async (email, password) => {
     try {
@@ -23,6 +24,8 @@ export const loginUser = async (email, password) => {
 // User registration
 export const registerUser = async (userData) => {
     try {
+        console.log('=== REGISTER USER STARTED ===')
+        console.log('User data:', userData)
         const { email, password, username, dob } = userData
 
         // Create user account
@@ -54,6 +57,28 @@ export const registerUser = async (userData) => {
                 emailVerified: false
             })
         } catch (_) {}
+
+        // Send welcome email using fetch to backend
+        try {
+            console.log('Sending welcome email to:', email, 'username:', username)
+            
+            // Use a simple fetch without CORS issues
+            const response = await fetch('http://localhost:3000/api/send-welcome-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    username: username
+                })
+            })
+            
+            const result = await response.json()
+            console.log('Welcome email result:', result)
+        } catch (error) {
+            console.log('Failed to send email:', error.message)
+        }
 
         // Return immediately to let frontend redirect quickly
         return { success: true, user, role }

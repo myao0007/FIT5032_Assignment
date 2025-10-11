@@ -52,3 +52,45 @@ npm run build
 ```sh
 npm run lint
 ```
+
+## Email Functionality
+
+This application includes email functionality using SendGrid API. When a user successfully registers, they will receive a welcome email with an attachment.
+
+### Email Configuration
+
+1. Create a `.env` file in the project root with the following variables:
+   ```
+   SENDGRID_API_KEY=your-sendgrid-api-key-here
+   FROM_EMAIL=noreply@yourdomain.com
+   PORT=3000
+   ```
+
+2. Get your SendGrid API key:
+   - Sign up at [SendGrid](https://sendgrid.com/)
+   - Create an API key in your SendGrid dashboard
+   - Verify your sender email address
+
+3. Start the backend server:
+   ```sh
+   npm run start
+   ```
+
+### Email Features
+
+- **Welcome Email**: Automatically sent to new users upon successful registration
+- **HTML Content**: Beautiful, responsive email template with company branding
+- **PDF Attachment**: Includes a welcome guide PDF attachment
+- **Error Handling**: Registration continues even if email sending fails
+- **API Endpoints**: 
+  - `POST /api/send-welcome-email` - Send welcome email to new users
+  - `POST /api/send-email` - Send custom emails
+
+### Testing Email
+
+You can test the email functionality by running:
+```sh
+node test-email.js
+```
+
+For detailed configuration instructions, see `SIMPLE_EMAIL_CONFIG.md`.

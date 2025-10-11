@@ -57,7 +57,7 @@ const podcasts = [
     --nav-h: 64px;
     min-height: calc(100vh - var(--nav-h));
     padding: 84px 24px 24px;
-    background: linear-gradient(135deg, #ffd8e6, #ffb6c1);
+    background: white;
 }
 
 .container {

@@ -40,12 +40,48 @@
 
                 </div>
             </div>
+
+            <!-- Episodes Table Section -->
+            <div class="episodes-section">
+                <!-- Header with title and search -->
+                <div class="episodes-header">
+                    <h2 class="episodes-title">Episodes</h2>
+                    <div class="search-box">
+                        <InputText v-model="searchText" placeholder="Search episodes..." class="search-input" />
+                        <Button @click="clearSearch" icon="pi pi-times" severity="secondary" text size="small" />
+                    </div>
+                </div>
+
+                <!-- Episodes List -->
+                <div class="episodes-list">
+                    <div v-for="episode in currentPageEpisodes" :key="episode.title" class="episode-card">
+                        <div class="episode-header">
+                            <h3 class="episode-title">{{ episode.title }}</h3>
+                            <span class="episode-duration">{{ episode.length }}</span>
+                        </div>
+                        <p class="episode-author">By {{ episode.author }}</p>
+                        <p class="episode-summary">{{ episode.summary }}</p>
+                    </div>
+                </div>
+
+                <!-- Simple Pagination -->
+                <div class="simple-pagination">
+                    <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1" class="page-btn">
+                        &lt;
+                    </button>
+                    <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+                    <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages" class="page-btn">
+                        &gt;
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import episodesData from '@/data/episodes.json'
 
 // Simple rating system with real calculation
 const userRating = ref(0)
@@ -70,6 +106,58 @@ const handleStarClick = (event) => {
         console.log('User rated:', rating, 'New average:', averageRating.value.toFixed(1))
     }
 }
+
+// Episodes data and functionality
+const episodes = ref([])
+const searchText = ref('')
+const currentPage = ref(1)
+const itemsPerPage = 5
+
+// Load episodes data
+onMounted(() => {
+    episodes.value = episodesData
+})
+
+// Filter episodes based on search text
+const filteredEpisodes = computed(() => {
+    if (!searchText.value) return episodes.value
+
+    return episodes.value.filter(episode =>
+        episode.title.toLowerCase().includes(searchText.value.toLowerCase()) ||
+        episode.author.toLowerCase().includes(searchText.value.toLowerCase()) ||
+        episode.summary.toLowerCase().includes(searchText.value.toLowerCase())
+    )
+})
+
+// Calculate total pages
+const totalPages = computed(() => {
+    return Math.ceil(filteredEpisodes.value.length / itemsPerPage)
+})
+
+// Get episodes for current page
+const currentPageEpisodes = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage
+    const end = start + itemsPerPage
+    return filteredEpisodes.value.slice(start, end)
+})
+
+// Clear search
+const clearSearch = () => {
+    searchText.value = ''
+    currentPage.value = 1
+}
+
+// Go to specific page
+const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page
+    }
+}
+
+// Reset to page 1 when search changes
+watch(searchText, () => {
+    currentPage.value = 1
+})
 </script>
 
 <style scoped>
@@ -77,7 +165,7 @@ const handleStarClick = (event) => {
     --nav-h: 64px;
     min-height: calc(100vh - var(--nav-h));
     padding: 84px 24px 24px;
-    background: linear-gradient(135deg, #ffd8e6, #ffb6c1);
+    background: white;
 }
 
 .container {
@@ -194,5 +282,142 @@ const handleStarClick = (event) => {
     margin: 0;
     color: #666;
     font-size: 0.95rem;
+}
+
+/* Episodes Section */
+.episodes-section {
+    margin-top: 60px;
+    padding: 0 20px;
+}
+
+/* Episodes Header */
+.episodes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.episodes-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #262c67;
+    margin: 0;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-input {
+    min-width: 300px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Episodes List Styles */
+.episodes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.episode-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0;
+    transition: box-shadow 0.2s ease;
+}
+
+.episode-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.episode-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.episode-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #262c67;
+    margin: 0;
+    flex: 1;
+    line-height: 1.3;
+}
+
+.episode-duration {
+    background: #f0f0f0;
+    color: #666;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 16px;
+}
+
+.episode-author {
+    color: #888;
+    font-size: 14px;
+    margin: 0 0 16px 0;
+    font-style: italic;
+}
+
+.episode-summary {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 15px;
+}
+
+/* Simple Pagination */
+.simple-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+    padding: 16px 0;
+}
+
+.page-btn {
+    background: white;
+    border: 1px solid #ddd;
+    color: #666;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #f0f0f0;
+    color: #333;
+    border-color: #ccc;
+}
+
+.page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-info {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
 }
 </style>
