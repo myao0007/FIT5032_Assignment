@@ -280,7 +280,7 @@ const toggleConfirmPasswordVisibility = () => {
 
 
 <style scoped>
-/* 背景 */
+/* Background */
 .auth-bg {
   --nav-h: 64px;
   min-height: calc(100vh - var(--nav-h));
@@ -292,7 +292,7 @@ const toggleConfirmPasswordVisibility = () => {
   background: white;
 }
 
-/* 卡片 */
+/* Card */
 .signup-card {
   width: 100%;
   max-width: 520px;
@@ -313,65 +313,65 @@ const toggleConfirmPasswordVisibility = () => {
   color: #262c67;
 }
 
-/* 表单宽度（让输入框看起来不那么长） */
+/* Form width (make input fields look less long) */
 .signup-card form {
   max-width: 360px;
-  /* ← 原来 100%/很长；现在更协调 */
+  /* Originally 100%/very long; now more balanced */
   margin: 0 auto;
 }
 
-/* 输入框：统一高度与圆角 */
+/* Input fields: uniform height and border radius */
 .form-control {
   width: 100%;
   height: 50px;
-  /* 统一高度 */
+  /* Uniform height */
   padding: 10px 14px;
-  /* 视觉舒适的内边距 */
+  /* Visually comfortable padding */
   border-radius: 10px !important;
-  /* 和你的整体风格一致 */
+  /* Consistent with your overall style */
   font-size: 1rem;
   box-shadow: none;
 }
 
-/* 输入组中的输入框圆角处理 */
+/* Border radius handling for input fields in input groups */
 .input-group .form-control {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
 
-/* 输入组中的按钮圆角处理 */
+/* Border radius handling for buttons in input groups */
 .input-group .btn {
   border-top-right-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
   height: 50px;
-  /* 确保和输入框同高 */
+  /* Ensure same height as input fields */
 }
 
-/* 自定义密码可见性按钮样式 */
+/* Custom password visibility button styles */
 .input-group .btn-outline-secondary {
   border-color: #ced4da !important;
-  /* 使用与输入框相同的边框颜色 */
+  /* Use same border color as input fields */
   color: #6c757d !important;
-  /* 灰色图标 */
+  /* Gray icon */
   background-color: transparent !important;
 }
 
 .input-group .btn-outline-secondary:hover {
   background-color: #f8f9fa !important;
-  /* 浅灰色悬停背景 */
+  /* Light gray hover background */
   border-color: #ced4da !important;
   color: #6c757d !important;
 }
 
-/* 在验证错误状态下保持按钮样式 */
+/* Maintain button styles in validation error state */
 .input-group .form-control.is-invalid+.btn-outline-secondary {
   border-color: #dc3545 !important;
-  /* 错误状态下的边框颜色 */
+  /* Border color in error state */
   border-left: none;
-  /* 移除左边框，与输入框边框融合 */
+  /* Remove left border, merge with input field border */
 }
 
-/* 确保验证状态下的圆角 */
+/* Ensure border radius in validation state */
 .form-control.is-invalid {
   border-radius: 10px !important;
 }
@@ -381,12 +381,12 @@ const toggleConfirmPasswordVisibility = () => {
   border-bottom-right-radius: 0 !important;
 }
 
-/* 修改所有输入框的 placeholder 颜色 */
+/* Modify placeholder color for all input fields */
 .form-control::placeholder {
   color: #8a8a8a;
-  /* 和提示文字保持一致 */
+  /* Keep consistent with hint text */
   opacity: 1;
-  /* Safari / Firefox 默认会加透明度，强制设为不透明 */
+  /* Safari/Firefox default adds transparency, force opaque */
 }
 
 .form-hint {
@@ -395,21 +395,21 @@ const toggleConfirmPasswordVisibility = () => {
   font-size: .85rem;
   line-height: 1.4;
   color: #8a8a8a;
-  /* NEW: 灰色，和密码规则一致 */
+  /* NEW: Gray, consistent with password rules */
 }
 
-/* 输入框 */
+/* Input fields */
 .form-control.is-invalid {
   border-color: #dc3545;
 }
 
-/* 修复输入组中按钮的圆角 */
+/* Fix border radius for buttons in input groups */
 .input-group .btn {
   border-top-right-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
 }
 
-/* 保持输入框在验证状态下的圆角 */
+/* Maintain border radius for input fields in validation state */
 .input-group .form-control:not(:last-child) {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
@@ -420,14 +420,14 @@ const toggleConfirmPasswordVisibility = () => {
   font-size: .9rem;
 }
 
-/* 星号 */
+/* Asterisk */
 .form-label::after {
   content: " *";
   color: #dc3545;
   font-weight: 300;
 }
 
-/* 密码规则 */
+/* Password rules */
 .password-rules {
   list-style: none;
   padding-left: 0;
@@ -449,7 +449,7 @@ const toggleConfirmPasswordVisibility = () => {
   color: #239a3b;
 }
 
-/* 按钮 */
+/* Button */
 .btn-primary-custom {
   display: block;
   min-width: 160px;
@@ -476,13 +476,13 @@ const toggleConfirmPasswordVisibility = () => {
   transform: none;
 }
 
-/* 加载动画 */
+/* Loading animation */
 .spinner-border-sm {
   width: 1rem;
   height: 1rem;
 }
 
-/* 成功和错误消息样式 */
+/* Success and error message styles */
 .text-success {
   color: #28a745 !important;
   font-weight: 500;
@@ -497,30 +497,30 @@ const toggleConfirmPasswordVisibility = () => {
 
 .date-picker-wrapper {
   position: relative;
-  /* 为隐藏的日期选择器创建定位上下文 */
+  /* Create positioning context for hidden date picker */
 }
 
 .date-picker-hidden {
   position: absolute;
-  /* 绝对定位 */
+  /* Absolute positioning */
   opacity: 0;
-  /* 完全透明 */
+  /* Completely transparent */
   width: 100%;
-  /* 与父元素同宽 */
+  /* Same width as parent element */
   height: 100%;
-  /* 与父元素同高 */
+  /* Same height as parent element */
   top: 0;
   left: 0;
   z-index: -1;
-  /* 放在底层 */
+  /* Place at bottom layer */
 }
 
-/* 当日期选择器打开时，确保它显示在正确位置 */
+/* When date picker opens, ensure it displays in correct position */
 .date-picker-hidden::-webkit-calendar-picker-indicator {
   position: absolute;
   right: 0;
   top: 100%;
-  /* 显示在输入框下方 */
+  /* Display below input field */
   width: 100%;
   height: 100%;
   cursor: pointer;

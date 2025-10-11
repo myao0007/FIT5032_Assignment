@@ -4,6 +4,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import PodcastsView from '@/views/PodcastsView.vue'
 import PodcastDetailView from '@/views/PodcastDetailView.vue'
+import EchoesDetailView from '@/views/EchoesDetailView.vue'
+import SoulSistersDetailView from '@/views/SoulSistersDetailView.vue'
+import BloomDetailView from '@/views/BloomDetailView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
@@ -16,6 +19,9 @@ const router = createRouter({
     { path: '/', redirect: '/home' },
     { path: '/podcasts', name: 'podcasts', component: PodcastsView },
     { path: '/podcast/:id', name: 'podcast-detail', component: PodcastDetailView },
+    { path: '/echoes', name: 'echoes-detail', component: EchoesDetailView },
+    { path: '/soul-sisters', name: 'soul-sisters-detail', component: SoulSistersDetailView },
+    { path: '/bloom', name: 'bloom-detail', component: BloomDetailView },
     { path: '/home', name: 'home', component: HomeView },
 
     { path: '/login', name: 'login', component: LoginView, meta: { guestOnly: true } },
