@@ -7,7 +7,7 @@
 
       <ul class="menu">
         <li><router-link to="/podcasts" class="nav-link">Podcasts</router-link></li>
-        <li><router-link to="/live" class="nav-link">Live</router-link></li>
+        <li><router-link to="/live" class="nav-link">Event</router-link></li>
         <li><router-link to="/treehole" class="nav-link">Tree Hole</router-link></li>
         <li><router-link to="/discover" class="nav-link">Discover</router-link></li>
         <li><router-link to="/curve" class="nav-link">Emotional Curve</router-link></li>
@@ -69,7 +69,7 @@ const handleLogout = async () => {
 .brand {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #ffb6c1;
+  color: white;
   text-decoration: none;
   line-height: 1;
   white-space: nowrap;
@@ -99,8 +99,8 @@ const handleLogout = async () => {
 
 
 .nav-link {
-  color: #ffb6c1 !important;
-  /* Force pure pink color */
+  color: white !important;
+  /* White color for all nav links */
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
@@ -108,14 +108,14 @@ const handleLogout = async () => {
 }
 
 .nav-link:hover {
-  color: #ffd8e6 !important;
-  /* Light pink on hover */
+  color: #e0e0e0 !important;
+  /* Light gray on hover */
 }
 
-/* Ensure active state maintains pink color */
+/* Ensure active state maintains white color */
 .router-link-active,
 .router-link-exact-active {
-  color: #ffb6c1 !important;
+  color: white !important;
 }
 
 .brand,
@@ -136,12 +136,12 @@ const handleLogout = async () => {
 }
 
 .logout-btn:hover {
-  color: #ffd8e6 !important;
+  color: #e0e0e0 !important;
 }
 
 /* User info styles */
 .user-info {
-  color: #ffb6c1 !important;
+  color: white !important;
   font-weight: 600;
 }
 </style>
