@@ -15,7 +15,7 @@ import 'primeicons/primeicons.css'
 
 const app = createApp(App)
 
-// 注册PrimeVue组件
+// Register PrimeVue components
 app.use(PrimeVue)
 app.component('DataTable', DataTable)
 app.component('Column', Column)

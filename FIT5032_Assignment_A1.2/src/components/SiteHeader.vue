@@ -100,7 +100,7 @@ const handleLogout = async () => {
 
 .nav-link {
   color: #ffb6c1 !important;
-  /* 强制使用纯粉色 */
+  /* Force pure pink color */
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
@@ -109,10 +109,10 @@ const handleLogout = async () => {
 
 .nav-link:hover {
   color: #ffd8e6 !important;
-  /* 悬停时变浅粉色 */
+  /* Light pink on hover */
 }
 
-/* 确保激活状态保持粉色 */
+/* Ensure active state maintains pink color */
 .router-link-active,
 .router-link-exact-active {
   color: #ffb6c1 !important;
@@ -125,7 +125,7 @@ const handleLogout = async () => {
   height: 64px;
 }
 
-/* 登出按钮样式 */
+/* Logout button styles */
 .logout-btn {
   background: none;
   border: none;
@@ -139,7 +139,7 @@ const handleLogout = async () => {
   color: #ffd8e6 !important;
 }
 
-/* 用户信息样式 */
+/* User info styles */
 .user-info {
   color: #ffb6c1 !important;
   font-weight: 600;

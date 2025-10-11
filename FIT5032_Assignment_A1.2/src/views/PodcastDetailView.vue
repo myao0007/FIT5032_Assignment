@@ -46,9 +46,22 @@
                 <!-- Header with title and search -->
                 <div class="episodes-header">
                     <h2 class="episodes-title">Episodes</h2>
-                    <div class="search-box">
-                        <InputText v-model="searchText" placeholder="Search episodes..." class="search-input" />
-                        <Button @click="clearSearch" icon="pi pi-times" severity="secondary" text size="small" />
+                    <div class="controls-box">
+                        <div class="search-box">
+                            <div class="search-input-wrapper">
+                                <i class="pi pi-search search-icon"></i>
+                                <InputText v-model="searchText" placeholder="Search" class="search-input" />
+                                <Button v-if="searchText" @click="clearSearch" icon="pi pi-times" severity="secondary"
+                                    text size="small" class="clear-btn" />
+                            </div>
+                        </div>
+                        <div class="sort-box">
+                            <select v-model="sortBy" class="sort-select">
+                                <option value="title">Sort by Title</option>
+                                <option value="author">Sort by Author</option>
+                                <option value="length">Sort by Length</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -110,6 +123,7 @@ const handleStarClick = (event) => {
 // Episodes data and functionality
 const episodes = ref([])
 const searchText = ref('')
+const sortBy = ref('title')
 const currentPage = ref(1)
 const itemsPerPage = 5
 
@@ -118,15 +132,35 @@ onMounted(() => {
     episodes.value = episodesData
 })
 
-// Filter episodes based on search text
+// Filter and sort episodes
 const filteredEpisodes = computed(() => {
-    if (!searchText.value) return episodes.value
+    let filtered = episodes.value
 
-    return episodes.value.filter(episode =>
-        episode.title.toLowerCase().includes(searchText.value.toLowerCase()) ||
-        episode.author.toLowerCase().includes(searchText.value.toLowerCase()) ||
-        episode.summary.toLowerCase().includes(searchText.value.toLowerCase())
-    )
+    // Filter by search text
+    if (searchText.value) {
+        filtered = filtered.filter(episode =>
+            episode.title.toLowerCase().includes(searchText.value.toLowerCase()) ||
+            episode.author.toLowerCase().includes(searchText.value.toLowerCase()) ||
+            episode.summary.toLowerCase().includes(searchText.value.toLowerCase())
+        )
+    }
+
+    // Sort episodes
+    return filtered.sort((a, b) => {
+        switch (sortBy.value) {
+            case 'title':
+                return a.title.localeCompare(b.title)
+            case 'author':
+                return a.author.localeCompare(b.author)
+            case 'length':
+                // Extract numbers from length strings (e.g., "43 min" -> 43)
+                const aLength = parseInt(a.length)
+                const bLength = parseInt(b.length)
+                return aLength - bLength
+            default:
+                return 0
+        }
+    })
 })
 
 // Calculate total pages
@@ -305,18 +339,82 @@ watch(searchText, () => {
     margin: 0;
 }
 
+.controls-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .search-box {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.search-input {
-    min-width: 300px;
+.sort-box {
+    display: flex;
+    align-items: center;
+}
+
+.sort-select {
     padding: 8px 12px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 14px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: #262c67;
+    box-shadow: 0 0 0 2px rgba(38, 44, 103, 0.1);
+}
+
+.sort-select:hover {
+    border-color: #262c67;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    color: #666;
+    font-size: 14px;
+    z-index: 1;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #262c67;
+    box-shadow: 0 0 0 2px rgba(38, 44, 103, 0.1);
+}
+
+.clear-btn {
+    position: absolute;
+    right: 8px;
+    padding: 4px;
+    min-width: auto;
+    width: 24px;
+    height: 24px;
 }
 
 /* Episodes List Styles */
