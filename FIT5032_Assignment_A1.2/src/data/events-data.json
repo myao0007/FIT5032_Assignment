@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "title": "Reconnecting with Yourself – Healing Workshop",
+    "date": "Oct 23, 2025",
+    "time": "7:00 pm – 9:00 pm",
+    "location": "SHE Studio, Melbourne",
+    "cover": "reconnect_self.jpg",
+    "description": "A gentle evening of reflection and guided sharing to help you reconnect with your inner self. Through breath, journaling, and soft conversation, we'll explore what self-love truly means after exhaustion or heartbreak.",
+    "note": "Women only. Bring a notebook and wear something comfortable."
+  },
+  {
+    "id": 2,
+    "title": "Emotional Boundaries and Self-Worth",
+    "date": "Nov 9, 2025",
+    "time": "6:30 pm – 8:30 pm",
+    "location": "Online via Zoom",
+    "cover": "emotional_boundaries.jpg",
+    "description": "A live online session about emotional boundaries — how to say no without guilt, and how to protect your peace. Together, we'll talk about people-pleasing, self-respect, and the power of choosing yourself.",
+    "note": "Hosted by therapist Anna Liu. Free but registration required."
+  },
+  {
+    "id": 3,
+    "title": "From Anxiety to Calm – Mindful Healing Night",
+    "date": "Nov 20, 2025",
+    "time": "6:00 pm – 7:30 pm",
+    "location": "Harmony Space, Perth",
+    "cover": "from_anxiety_to_calm.jpg",
+    "description": "This guided meditation and gentle breathwork circle is for women who often feel overwhelmed, restless, or emotionally tired. Learn grounding techniques to return to calm and safety within yourself.",
+    "note": "Suitable for beginners. Please bring water and a light scarf or blanket."
+  },
+  {
+    "id": 4,
+    "title": "Letting Go with Love – Closure & Release Circle",
+    "date": "Dec 4, 2025",
+    "time": "7:00 pm – 9:00 pm",
+    "location": "The Nest, Sydney",
+    "cover": "letting_go_with_love.jpg",
+    "description": "Sometimes healing means saying goodbye with grace. In this women's circle, we'll release past relationships, regrets, or expectations that still weigh on the heart — and replace them with compassion.",
+    "note": "All materials provided. Limited to 20 participants."
+  },
+  {
+    "id": 5,
+    "title": "Gentle Strength – Building Confidence from Within",
+    "date": "Dec 15, 2025",
+    "time": "8:00 pm – 9:30 pm",
+    "location": "The Calm Room, Adelaide",
+    "cover": "gentle_strength.jpg",
+    "description": "An empowering talk and group reflection on rebuilding confidence after emotional challenges. We'll explore how vulnerability, self-kindness, and community support can help you stand strong again.",
+    "note": "Hosted by life coach Mia Tang. Bring your favourite tea and an open heart."
+  }
+]
