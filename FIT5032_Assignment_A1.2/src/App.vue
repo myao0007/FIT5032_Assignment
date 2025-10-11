@@ -10,7 +10,7 @@ import SiteHeader from '@/components/SiteHeader.vue'
 <style>
 body {
   margin: 0;
-  background: linear-gradient(135deg, #ffd8e6, #ffb6c1);
+  background: white;
   min-height: 100vh;
   font-family: Arial, sans-serif;
 }

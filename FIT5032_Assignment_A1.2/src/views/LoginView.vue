@@ -169,7 +169,7 @@ const togglePasswordVisibility = () => {
   align-items: center;
   justify-content: center;
   padding: 84px 24px 24px;
-  background: linear-gradient(135deg, #ffd8e6, #ffb6c1);
+  background: white;
 }
 
 /* Card */

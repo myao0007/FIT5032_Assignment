@@ -91,7 +91,7 @@ onMounted(async () => {
   justify-content: center;
   align-items: flex-start;
   padding: 32px 24px 24px;
-  background: linear-gradient(135deg, #ffd8e6, #ffb6c1);
+  background: white;
   color: #262c67;
 }
 
