@@ -49,11 +49,12 @@ const handleLogout = async () => {
 
 <style scoped>
 .she-navbar {
-  background: #151a4b;
+  background: white;
   height: 64px;
   display: flex;
   align-items: center;
   padding: 0 16px;
+  box-shadow: 0 2px 8px rgba(21, 26, 75, 0.15);
 }
 
 
@@ -69,10 +70,16 @@ const handleLogout = async () => {
 .brand {
   font-size: 1.8rem;
   font-weight: 800;
-  color: white;
+  color: #4a4a4a;
   text-decoration: none;
   line-height: 1;
   white-space: nowrap;
+  transition: color .2s ease;
+}
+
+.brand:hover {
+  color: #666666 !important;
+  /* Light gray on hover */
 }
 
 
@@ -99,23 +106,23 @@ const handleLogout = async () => {
 
 
 .nav-link {
-  color: white !important;
-  /* White color for all nav links */
+  color: #4a4a4a !important;
+  /* Dark gray color for all nav links */
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
-  transition: color .2s ease;
+  transition: all .2s ease;
 }
 
 .nav-link:hover {
-  color: #e0e0e0 !important;
-  /* Light gray on hover */
+  color: #666666 !important;
+  /* Light gray on hover without background */
 }
 
-/* Ensure active state maintains white color */
+/* Ensure active state has better styling */
 .router-link-active,
 .router-link-exact-active {
-  color: white !important;
+  color: #4a4a4a !important;
 }
 
 .brand,
@@ -136,12 +143,12 @@ const handleLogout = async () => {
 }
 
 .logout-btn:hover {
-  color: #e0e0e0 !important;
+  color: #666666 !important;
 }
 
 /* User info styles */
 .user-info {
-  color: white !important;
+  color: #4a4a4a !important;
   font-weight: 600;
 }
 </style>
