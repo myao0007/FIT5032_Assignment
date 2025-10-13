@@ -7,6 +7,7 @@ import {
     updateProfile
 } from 'firebase/auth'
 import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 import { auth, db } from './config.js'
 
 
@@ -60,24 +61,15 @@ export const registerUser = async (userData) => {
             console.error('❌ Failed to save user data to Firestore:', error)
         }
 
-        // Send welcome email using fetch to backend
+        // Send welcome email using Cloud Functions
         try {
             console.log('Sending welcome email to:', email, 'username:', username)
             
-            // Use a simple fetch without CORS issues
-            const response = await fetch('http://localhost:3000/api/send-welcome-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    username: username
-                })
-            })
+            const functions = getFunctions()
+            const sendWelcomeEmail = httpsCallable(functions, 'sendWelcomeEmail')
             
-            const result = await response.json()
-            console.log('Welcome email result:', result)
+            const result = await sendWelcomeEmail({ email, username })
+            console.log('Welcome email result:', result.data)
         } catch (error) {
             console.log('Failed to send email:', error.message)
         }

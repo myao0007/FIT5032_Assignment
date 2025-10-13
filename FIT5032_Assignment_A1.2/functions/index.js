@@ -31,22 +31,56 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 // Generate event PDF and send email
 exports.generateEventPDF = onCall(async (request) => {
   try {
-    const { eventData } = request.data;
+    const { eventData, userEmail } = request.data;
     
     if (!eventData) {
       throw new Error("Event data is required");
+    }
+    
+    if (!userEmail) {
+      throw new Error("User email is required");
     }
 
     // Generate PDF
     const pdfBuffer = await generatePDF(eventData);
     
     // Send email
-    await sendEmailWithPDF(eventData, pdfBuffer);
+    await sendEmailWithPDF(eventData, pdfBuffer, userEmail);
     
     return { success: true, message: "PDF sent to email successfully" };
   } catch (error) {
     logger.error("Error generating PDF:", error);
     throw new Error("Failed to generate PDF: " + error.message);
+  }
+});
+
+// Send welcome email function
+exports.sendWelcomeEmail = onCall(async (request) => {
+  try {
+    const { email, username } = request.data;
+    
+    if (!email || !username) {
+      throw new Error("Email and username are required");
+    }
+    
+    const msg = {
+      to: email,
+      from: 'myao0007@student.monash.edu',
+      subject: 'Welcome to SHE Podcast Community!',
+      text: `Hi ${username}, welcome to our community!`,
+      html: `<div>Hi ${username}, welcome to our community!</div>`,
+      attachments: [{
+        content: 'V2VsY29tZSB0byBTSEUgUG9kY2FzdCBDb21tdW5pdHkhCgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KQUJPVVQgVVMKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgpTSEUgaXMgYSBzYWZlIHNwYWNlIGZvciB3b21lbiB0byBzaGFyZSBlbW90aW9ucywgc3RvcmllcywgYW5kIHBlcnNvbmFsIGdyb3d0aCB0aHJvdWdoOgoK8J+Ome+4jyBQT0RDQVNUUwogICDigKIgRWNob2VzIG9mIEhlciBIZWFydCDigJMgSW50aW1hdGUgc3RvcmllcyBvZiBsb3ZlIGFuZCBsb3NzCgogIOKAoiBZb3VyIFN0b3J5IOKAmSBQZXJzb25hbCBncm93dGggYW5kIGVtcG93ZXJtZW50CgogIOKAoiBTaGUgVGFsa3Mg4oCTIENhcmVlciBhbmQgbGlmZSBhZHZpY2UKCvCfjpnvuI8gQ09NTVVOSVRZCgogIOKAoiBGYWNlYm9vayBHcm91cCDigJMgQ29ubmVjdCB3aXRoIG90aGVyIHdvbWVuCgogIOKAoiBEaXNjb3JkIFNlcnZlciDigJMgUmVhbC10aW1lIGNoYXRzCgogIOKAoiBXZWJzaXRlIOKAmSBVcGRhdGVzIGFuZCBldmVudHMKCvCfjpnvuI8gRVZFTlRTCgogIOKAoiBXb3Jrc2hvcHMg4oCTIExlYXJuIG5ldyBza2lsbHMKCuKAoiBOZXR3b3JraW5nIOKAmSBNZWV0IGxpa2UtbWluZGVkIHBlb3BsZQoK4oCiIFNlbWluYXJzIOKAmSBTcGVha2VycyBhbmQgaW5zcGlyYXRpb24KCvCfjpnvuI8gUkVTT1VSQ0VTCgogIOKAoiBQb2RjYXN0IEVwaXNvZGVzIOKAmSBBcmNoaXZlZCBjb250ZW50CgogIOKAoiBCbG9nIFBvc3RzIOKAmSBBcnRpY2xlcyBhbmQgdGlwcyAKCuKAoiBQb2RjYXN0IFNlcmllcyDigJMgVGhlbWF0aWMgY29udGVudAoKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CkZPTExPVyBVUyBPTgoKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgpGYWNlYm9vazogQHRoZXNoZXBvZGNhc3QKQnJvd3NlOiB0aGVzaGVwb2RjYXN0LmNvbQpJbnN0YWdyYW06IEB0aGVzaGVwb2RjYXN0CkRpc2NvcmQ6IGpvaW4gb3VyIGNvbW11bml0eQoKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CldFTENPTUUgVE8gT1VSIEZBTUlMWSEKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09',
+        filename: 'SHE_Community_Guide.txt',
+        type: 'text/plain'
+      }]
+    };
+    
+    await sgMail.send(msg);
+    return { success: true, message: 'Welcome email sent!' };
+  } catch (error) {
+    logger.error('Error sending welcome email:', error);
+    throw new Error('Failed to send welcome email: ' + error.message);
   }
 });
 
@@ -104,16 +138,15 @@ async function generatePDF(eventData) {
     format: 'A4',
     printBackground: true
   });
-  
   await browser.close();
   return pdf;
 }
 
 // Send email
-async function sendEmailWithPDF(eventData, pdfBuffer) {
+async function sendEmailWithPDF(eventData, pdfBuffer, userEmail) {
   const msg = {
-    to: 'user@example.com', // Should get real email from user authentication
-    from: 'noreply@yourapp.com',
+    to: userEmail, // Use real user email
+    from: 'myao0007@student.monash.edu',
     subject: `Event Details: ${eventData.title}`,
     text: 'Please find the event details attached.',
     attachments: [
