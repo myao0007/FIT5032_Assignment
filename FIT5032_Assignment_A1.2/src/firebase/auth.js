@@ -4,8 +4,7 @@ import {
     createUserWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    updateProfile,
-    sendEmailVerification
+    updateProfile
 } from 'firebase/auth'
 import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { auth, db } from './config.js'
@@ -37,8 +36,7 @@ export const registerUser = async (userData) => {
             await updateProfile(user, { displayName: username })
         } catch (_) {}
 
-        // Fire-and-forget: email verification, non-blocking registration
-        try { sendEmailVerification(user) } catch (_) {}
+        // Email verification removed - using custom welcome email instead
 
         // Calculate role: admin if email is admin@admin.com and password is 1234
         let role = 'user'
@@ -46,9 +44,10 @@ export const registerUser = async (userData) => {
             role = 'admin'
         }
 
-        // Fire-and-forget: save extended info to Firestore, non-blocking registration
+        // Save extended info to Firestore
         try {
-            setDoc(doc(db, 'users', user.uid), {
+            console.log('Saving user data to Firestore:', { username, email, dob, role, uid: user.uid })
+            await setDoc(doc(db, 'users', user.uid), {
                 username,
                 email,
                 dob,
@@ -56,7 +55,10 @@ export const registerUser = async (userData) => {
                 createdAt: new Date().toISOString(),
                 emailVerified: false
             })
-        } catch (_) {}
+            console.log('✅ User data saved to Firestore successfully')
+        } catch (error) {
+            console.error('❌ Failed to save user data to Firestore:', error)
+        }
 
         // Send welcome email using fetch to backend
         try {
