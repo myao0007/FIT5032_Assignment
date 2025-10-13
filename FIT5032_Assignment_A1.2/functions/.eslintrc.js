@@ -3,6 +3,12 @@ module.exports = {
     es6: true,
     node: true,
   },
+  globals: {
+    "module": "readonly",
+    "require": "readonly",
+    "process": "readonly",
+    "exports": "readonly",
+  },
   parserOptions: {
     "ecmaVersion": 2018,
   },
@@ -24,5 +30,4 @@ module.exports = {
       rules: {},
     },
   ],
-  globals: {},
 };

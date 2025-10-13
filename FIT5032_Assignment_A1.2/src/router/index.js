@@ -10,6 +10,7 @@ import BloomDetailView from '@/views/BloomDetailView.vue'
 import TreeHoleView from '@/views/TreeHoleView.vue'
 import ShareThoughtsView from '@/views/ShareThoughtsView.vue'
 import EventView from '@/views/EventView.vue'
+import EventDetailView from '@/views/EventDetailView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
@@ -28,6 +29,7 @@ const router = createRouter({
     { path: '/treehole', name: 'treehole', component: TreeHoleView },
     { path: '/share-thoughts', name: 'share-thoughts', component: ShareThoughtsView },
     { path: '/live', name: 'event', component: EventView },
+    { path: '/event/:id', name: 'event-detail', component: EventDetailView },
     { path: '/home', name: 'home', component: HomeView },
 
     { path: '/login', name: 'login', component: LoginView, meta: { guestOnly: true } },

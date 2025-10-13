@@ -30,7 +30,7 @@
                     <!-- Right: Event Details -->
                     <div class="event-details">
                         <h3 class="event-title">{{ event.title }}</h3>
-                        
+
                         <div class="event-info">
                             <div class="info-item">
                                 <span class="info-icon">🕒</span>
@@ -50,7 +50,7 @@
                             <p><strong>Note:</strong> {{ event.note }}</p>
                         </div>
 
-                        <button class="view-event-btn">
+                        <button class="view-event-btn" @click="goToEventDetail(event.id)">
                             View Event →
                         </button>
                     </div>
@@ -62,7 +62,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import eventsData from '@/data/events-data.json'
+
+const router = useRouter()
 
 // Reactive data
 const events = ref([])
@@ -71,6 +74,11 @@ const events = ref([])
 onMounted(() => {
     events.value = eventsData
 })
+
+// Navigate to event detail page
+const goToEventDetail = (eventId) => {
+    router.push(`/event/${eventId}`)
+}
 </script>
 
 <style scoped>
@@ -304,34 +312,34 @@ onMounted(() => {
     .event-card {
         flex-direction: column;
     }
-    
+
     .event-visual {
         flex: none;
         height: 300px;
         padding: 15px;
     }
-    
+
     .visual-background {
         height: 300px;
         max-width: 300px;
     }
-    
+
     .visual-overlay {
         padding: 20px;
     }
-    
+
     .visual-title {
         font-size: 1.8rem;
     }
-    
+
     .visual-subtitle {
         font-size: 1.2rem;
     }
-    
+
     .event-details {
         padding: 30px 20px;
     }
-    
+
     .page-title {
         font-size: 2rem;
     }
@@ -341,19 +349,19 @@ onMounted(() => {
     .container {
         padding: 20px 15px;
     }
-    
+
     .visual-title {
         font-size: 1.5rem;
     }
-    
+
     .visual-subtitle {
         font-size: 1rem;
     }
-    
+
     .event-details {
         padding: 20px 15px;
     }
-    
+
     .event-title {
         font-size: 1.5rem;
     }
