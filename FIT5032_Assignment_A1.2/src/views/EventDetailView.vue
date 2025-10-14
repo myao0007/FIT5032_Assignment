@@ -26,24 +26,26 @@
                     <span class="detail-label">Time:</span>
                     <span class="detail-value">{{ event.time }}</span>
                 </div>
-                <div class="detail-item">
-                    <span class="detail-icon">📍</span>
-                    <span class="detail-label">Location:</span>
-                    <span class="detail-value">{{ event.location }}</span>
+                <div class="detail-item location-with-buttons">
+                    <div class="location-info">
+                        <span class="detail-icon">📍</span>
+                        <span class="detail-label">Location:</span>
+                        <span class="detail-value">{{ event.location }}</span>
+                    </div>
+                    <div class="map-actions">
+                        <button @click="showMap = !showMap" class="map-toggle-btn">
+                            {{ showMap ? '🗺️ Hide Map' : '🗺️ Show Map' }}
+                        </button>
+                        <button @click="openInGoogleMaps" class="navigate-btn">
+                            🧭 Get Directions
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- Map Section -->
-            <div class="map-section">
-                <div class="map-actions">
-                    <button @click="showMap = !showMap" class="map-toggle-btn">
-                        {{ showMap ? '🗺️ Hide Map' : '🗺️ Show Map' }}
-                    </button>
-                    <button @click="openInGoogleMaps" class="navigate-btn">
-                        🧭 Get Directions
-                    </button>
-                </div>
-                <div v-if="showMap" class="map-container">
+            <div v-if="showMap" class="map-section">
+                <div class="map-container">
                     <div ref="mapContainer" class="map"></div>
                 </div>
             </div>
@@ -418,49 +420,59 @@ export default {
     color: #4a4a4a;
 }
 
-/* Map Section */
-.map-section {
-    margin: 40px 0;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 12px;
+/* Location with buttons */
+.location-with-buttons {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.location-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .map-actions {
     display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 16px;
 }
 
 .map-toggle-btn,
 .navigate-btn {
-    padding: 12px 24px;
+    padding: 0;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     border: none;
-    border-radius: 8px;
+    background: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .map-toggle-btn {
-    background: #ffb6c1;
-    color: white;
+    color: #ffb6c1;
 }
 
 .map-toggle-btn:hover {
-    background: #ff91a4;
-    transform: translateY(-2px);
+    color: #ff91a4;
 }
 
 .navigate-btn {
-    background: #262c67;
-    color: white;
+    color: #262c67;
 }
 
 .navigate-btn:hover {
-    background: #1a1f4a;
-    transform: translateY(-2px);
+    color: #1a1f4a;
+}
+
+/* Map Section */
+.map-section {
+    margin: 20px 0 40px 0;
 }
 
 .map-container {
