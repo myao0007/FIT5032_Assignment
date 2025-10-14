@@ -33,6 +33,21 @@
                 </div>
             </div>
 
+            <!-- Map Section -->
+            <div class="map-section">
+                <div class="map-actions">
+                    <button @click="showMap = !showMap" class="map-toggle-btn">
+                        {{ showMap ? '🗺️ Hide Map' : '🗺️ Show Map' }}
+                    </button>
+                    <button @click="openInGoogleMaps" class="navigate-btn">
+                        🧭 Get Directions
+                    </button>
+                </div>
+                <div v-if="showMap" class="map-container">
+                    <div ref="mapContainer" class="map"></div>
+                </div>
+            </div>
+
             <!-- About This Event Section -->
             <div class="about-section">
                 <h2 class="section-title">About This Event</h2>
@@ -104,7 +119,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import eventsData from '@/data/events-data.json'
 import jsPDF from 'jspdf'
@@ -115,6 +130,9 @@ export default {
         const route = useRoute()
         const event = ref(null)
         const isDownloading = ref(false)
+        const showMap = ref(false)
+        const mapContainer = ref(null)
+        let map = null
 
         const formattedDate = computed(() => {
             if (!event.value) return ''
@@ -195,6 +213,88 @@ export default {
             }
         }
 
+        // Initialize Google Map
+        const initMap = async () => {
+            console.log('🗺️ Initializing map...')
+            console.log('Event:', event.value)
+            console.log('Map container:', mapContainer.value)
+
+            if (!event.value || !mapContainer.value) {
+                console.error('❌ Missing event or map container')
+                return
+            }
+
+            try {
+                console.log('📍 Geocoding address:', event.value.location)
+
+                // Geocode the address to get coordinates
+                const geocoder = new google.maps.Geocoder()
+                geocoder.geocode({ address: event.value.location }, (results, status) => {
+                    console.log('Geocoding status:', status)
+                    console.log('Geocoding results:', results)
+
+                    if (status === 'OK' && results[0]) {
+                        const location = results[0].geometry.location
+
+                        // Create map
+                        map = new google.maps.Map(mapContainer.value, {
+                            center: location,
+                            zoom: 15,
+                            mapTypeControl: true,
+                            streetViewControl: true,
+                            fullscreenControl: true
+                        })
+
+                        // Add marker
+                        new google.maps.Marker({
+                            position: location,
+                            map: map,
+                            title: event.value.title,
+                            animation: google.maps.Animation.DROP
+                        })
+
+                        // Add info window
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: `
+                                <div style="padding: 10px;">
+                                    <h3 style="margin: 0 0 10px 0; color: #ffb6c1;">${event.value.title}</h3>
+                                    <p style="margin: 5px 0;"><strong>📍 ${event.value.location}</strong></p>
+                                    <p style="margin: 5px 0;">📅 ${event.value.date}</p>
+                                    <p style="margin: 5px 0;">🕒 ${event.value.time}</p>
+                                </div>
+                            `
+                        })
+
+                        infoWindow.open(map, new google.maps.Marker({
+                            position: location,
+                            map: map
+                        }))
+
+                        console.log('✅ Map initialized successfully!')
+                    } else {
+                        console.error('❌ Geocoding failed:', status)
+                    }
+                })
+            } catch (error) {
+                console.error('❌ Error initializing map:', error)
+            }
+        }
+        // Watch for showMap changes to initialize map
+        watch(showMap, (newVal) => {
+            if (newVal && event.value) {
+                setTimeout(() => {
+                    initMap()
+                }, 100)
+            }
+        })
+
+        // Open in Google Maps for navigation
+        const openInGoogleMaps = () => {
+            if (!event.value) return
+            const encodedAddress = encodeURIComponent(event.value.location)
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`, '_blank')
+        }
+
         onMounted(() => {
             const eventId = parseInt(route.params.id)
             const foundEvent = eventsData.find(e => e.id === eventId)
@@ -207,7 +307,10 @@ export default {
             event,
             formattedDate,
             isDownloading,
-            downloadPDF
+            downloadPDF,
+            showMap,
+            mapContainer,
+            openInGoogleMaps
         }
     }
 }
@@ -313,6 +416,64 @@ export default {
 
 .detail-value {
     color: #4a4a4a;
+}
+
+/* Map Section */
+.map-section {
+    margin: 40px 0;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+}
+
+.map-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.map-toggle-btn,
+.navigate-btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.map-toggle-btn {
+    background: #ffb6c1;
+    color: white;
+}
+
+.map-toggle-btn:hover {
+    background: #ff91a4;
+    transform: translateY(-2px);
+}
+
+.navigate-btn {
+    background: #262c67;
+    color: white;
+}
+
+.navigate-btn:hover {
+    background: #1a1f4a;
+    transform: translateY(-2px);
+}
+
+.map-container {
+    width: 100%;
+    height: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.map {
+    width: 100%;
+    height: 100%;
 }
 
 /* Section Titles */
