@@ -289,7 +289,7 @@ const toggleConfirmPasswordVisibility = () => {
   align-items: center;
   justify-content: center;
   padding: 84px 24px 24px;
-  background: white;
+  background: linear-gradient(135deg, #f8d7da 0%, #f0b6c1 25%, #e8a8b8 50%, #e0a0b0 75%, #d898a8 100%);
 }
 
 /* Card */
@@ -310,7 +310,7 @@ const toggleConfirmPasswordVisibility = () => {
   font-size: 1.6rem;
   font-weight: 800;
   margin-bottom: 18px;
-  color: #262c67;
+  color: #2c3e50;
 }
 
 /* Form width (make input fields look less long) */
@@ -456,7 +456,7 @@ const toggleConfirmPasswordVisibility = () => {
   padding: 10px 24px;
   margin: 16px auto 0;
   border-radius: 10px;
-  background: #262c67;
+  background: #2c3e50;
   color: #fff;
   border: none;
   font-weight: 700;
@@ -466,7 +466,7 @@ const toggleConfirmPasswordVisibility = () => {
 }
 
 .btn-primary-custom:hover:not(:disabled) {
-  background: #1e2349;
+  background: #1a252f;
   transform: translateY(-1px);
 }
 
@@ -524,5 +524,17 @@ const toggleConfirmPasswordVisibility = () => {
   width: 100%;
   height: 100%;
   cursor: pointer;
+}
+
+/* Link styles */
+a {
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  color: #1a252f;
+  text-decoration: underline;
 }
 </style>

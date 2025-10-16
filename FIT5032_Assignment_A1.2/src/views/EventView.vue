@@ -105,7 +105,7 @@ const goToEventDetail = (eventId) => {
 .page-title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: #262c67;
+    color: #2c3e50;
     margin: 0 0 16px 0;
 }
 
@@ -172,7 +172,7 @@ const goToEventDetail = (eventId) => {
 .visual-title {
     font-size: 2.2rem;
     font-weight: 800;
-    color: #262c67;
+    color: #2c3e50;
     margin: 0 0 8px 0;
     line-height: 1.2;
 }
@@ -208,7 +208,7 @@ const goToEventDetail = (eventId) => {
     display: block;
     font-size: 1.5rem;
     font-weight: 800;
-    color: #262c67;
+    color: #2c3e50;
     margin-top: 4px;
 }
 
@@ -236,7 +236,7 @@ const goToEventDetail = (eventId) => {
 .event-title {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #262c67;
+    color: #2c3e50;
     margin: 0 0 20px 0;
     line-height: 1.3;
 }
@@ -291,7 +291,7 @@ const goToEventDetail = (eventId) => {
 }
 
 .view-event-btn {
-    background: #262c67;
+    background: #2c3e50;
     color: white;
     border: none;
     padding: 14px 24px;
@@ -304,7 +304,7 @@ const goToEventDetail = (eventId) => {
 }
 
 .view-event-btn:hover {
-    background: #1a1f4a;
+    background: #1a252f;
 }
 
 /* Responsive Design */

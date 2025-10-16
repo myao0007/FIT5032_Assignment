@@ -74,20 +74,20 @@ const getEventMonth = () => {
 .event-card {
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f8d7da 0%, #f0b6c1 50%, #f0b6c1 100%);
     border-radius: 16px;
     padding: 24px;
-    color: white;
+    color: #2c3e50;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3), 0 4px 16px rgba(118, 75, 162, 0.2);
+    box-shadow: 0 8px 32px rgba(248, 215, 218, 0.3), 0 4px 16px rgba(240, 182, 193, 0.2);
     transition: box-shadow 0.3s ease, transform 0.3s ease;
     max-width: 800px;
     margin: 0 auto;
 }
 
 .event-card:hover {
-    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4), 0 6px 20px rgba(118, 75, 162, 0.3);
+    box-shadow: 0 12px 40px rgba(248, 215, 218, 0.4), 0 6px 20px rgba(240, 182, 193, 0.3);
     transform: translateY(-2px);
 }
 
