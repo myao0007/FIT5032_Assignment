@@ -1,16 +1,16 @@
 # Layout Components
 
-这个文件夹包含了不同的布局组件，可以在需要时切换使用。
+This folder contains different layout components that can be switched as needed.
 
 ## CardLayout.vue
 
-卡片式布局组件，用于显示episodes列表。
+Card layout component for displaying episodes list.
 
 ## WordCloudLayout.vue
 
-词云式布局组件，用于显示TreeHole的关键词云效果。
+Word cloud layout component for displaying TreeHole keyword cloud effects.
 
-### 使用方法：
+### Usage:
 
 ```vue
 <template>
@@ -23,43 +23,43 @@ import CardLayout from '@/components/layouts/CardLayout.vue'
 ```
 
 ### Props:
-- `currentPageEpisodes`: Array - 当前页的episodes数据
+- `currentPageEpisodes`: Array - Current page episodes data
 
-### 特点：
-- 卡片式设计，每个episode显示为一个独立的卡片
-- 悬停效果
-- 圆角和阴影效果
-- 响应式布局
+### Features:
+- Card design, each episode displayed as an independent card
+- Hover effects
+- Rounded corners and shadow effects
+- Responsive layout
 
-## 如何切换布局：
+## How to Switch Layouts:
 
-1. 在 `EchoesDetailView.vue` 中导入需要的布局组件
-2. 替换模板中的布局部分
-3. 确保传递正确的props
+1. Import the required layout component in `EchoesDetailView.vue`
+2. Replace the layout part in the template
+3. Ensure correct props are passed
 
-### 示例（切换回卡片布局）：
+### Example (Switch back to card layout):
 
 ```vue
-<!-- 替换表格部分 -->
+<!-- Replace table section -->
 <CardLayout :currentPageEpisodes="currentPageEpisodes" />
 ```
 
-### 示例（使用表格布局）：
+### Example (Using table layout):
 
 ```vue
-<!-- 当前的表格布局 -->
+<!-- Current table layout -->
 <div class="episodes-table-container">
   <table class="episodes-table">
-    <!-- 表格内容 -->
+    <!-- Table content -->
   </table>
 </div>
 ```
 
 ## WordCloudLayout.vue
 
-词云式布局组件，用于显示TreeHole的关键词云效果。
+Word cloud layout component for displaying TreeHole keyword cloud effects.
 
-### 使用方法：
+### Usage:
 
 ```vue
 <template>
@@ -77,21 +77,21 @@ import WordCloudLayout from '@/components/layouts/WordCloudLayout.vue'
 ```
 
 ### Props:
-- `treeholeData`: Array - TreeHole数据数组
-- `selectedEntry`: Object - 当前选中的条目（可选）
-- `selectEntry`: Function - 选择条目的函数
-- `goBack`: Function - 返回词云视图的函数
+- `treeholeData`: Array - TreeHole data array
+- `selectedEntry`: Object - Currently selected entry (optional)
+- `selectEntry`: Function - Function to select entry
+- `goBack`: Function - Function to return to word cloud view
 
-### 特点：
-- 词云式设计，关键词以不同大小和颜色显示
-- 点击关键词查看完整内容
-- 悬停效果和动画
-- 响应式布局
+### Features:
+- Word cloud design, keywords displayed in different sizes and colors
+- Click keywords to view full content
+- Hover effects and animations
+- Responsive layout
 
-### 示例（切换回词云布局）：
+### Example (Switch back to word cloud layout):
 
 ```vue
-<!-- 替换表格部分 -->
+<!-- Replace table section -->
 <WordCloudLayout 
   :treeholeData="treeholeData"
   :selectedEntry="selectedEntry"

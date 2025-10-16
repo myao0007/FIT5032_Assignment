@@ -11,6 +11,8 @@ import TreeHoleView from '@/views/TreeHoleView.vue'
 import ShareThoughtsView from '@/views/ShareThoughtsView.vue'
 import EventView from '@/views/EventView.vue'
 import EventDetailView from '@/views/EventDetailView.vue'
+import BookingView from '@/views/BookingView.vue'
+import FirestoreTestView from '@/views/FirestoreTestView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
@@ -30,6 +32,8 @@ const router = createRouter({
     { path: '/share-thoughts', name: 'share-thoughts', component: ShareThoughtsView },
     { path: '/live', name: 'event', component: EventView },
     { path: '/event/:id', name: 'event-detail', component: EventDetailView },
+    { path: '/booking/:id', name: 'booking', component: BookingView },
+    { path: '/firestore-test', name: 'firestore-test', component: FirestoreTestView },
     { path: '/home', name: 'home', component: HomeView },
 
     { path: '/login', name: 'login', component: LoginView, meta: { guestOnly: true } },

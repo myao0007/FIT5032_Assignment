@@ -110,6 +110,14 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Book Event Button - Bottom Center -->
+            <div class="book-event-section">
+                <button @click="goToBooking" class="book-event-btn">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    Book This Event
+                </button>
+            </div>
         </div>
     </div>
 
@@ -123,7 +131,7 @@
 
 <script>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import eventsData from '@/data/events-data.json'
 import jsPDF from 'jspdf'
 
@@ -131,6 +139,7 @@ export default {
     name: 'EventDetailView',
     setup() {
         const route = useRoute()
+        const router = useRouter()
         const event = ref(null)
         const isDownloading = ref(false)
         const showMap = ref(false)
@@ -298,6 +307,12 @@ export default {
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`, '_blank')
         }
 
+        const goToBooking = () => {
+            if (event.value) {
+                router.push(`/booking/${event.value.id}`)
+            }
+        }
+
         onMounted(() => {
             const eventId = parseInt(route.params.id)
             const foundEvent = eventsData.find(e => e.id === eventId)
@@ -313,7 +328,8 @@ export default {
             downloadPDF,
             showMap,
             mapContainer,
-            openInGoogleMaps
+            openInGoogleMaps,
+            goToBooking
         }
     }
 }
@@ -391,6 +407,43 @@ export default {
     color: #2c3e50;
     margin: 0 0 30px 0;
     line-height: 1.2;
+}
+
+/* Book Event Section */
+.book-event-section {
+    text-align: center;
+    margin: 60px 0 40px 0;
+    padding: 20px 0;
+}
+
+.book-event-btn {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.3);
+}
+
+.book-event-btn:hover {
+    background: linear-gradient(135deg, #1a252f, #2c3e50);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
+}
+
+.book-event-btn:active {
+    transform: translateY(0);
+}
+
+.book-event-btn i {
+    font-size: 1.2rem;
 }
 
 /* Event Details */
