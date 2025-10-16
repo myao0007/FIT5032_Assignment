@@ -6,6 +6,14 @@
             <div class="chat-area">
                 <!-- Welcome Message -->
                 <div v-if="messages.length === 0" class="welcome-section">
+                    <!-- Back Button -->
+                    <div class="back-button-container">
+                        <button @click="goBack" class="back-button">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Go Back
+                        </button>
+                    </div>
+
                     <div class="welcome-icon">
                         <i class="fa-solid fa-heart"></i>
                     </div>
@@ -43,6 +51,13 @@
 
                 <!-- Chat Messages -->
                 <div class="messages-container" ref="messagesContainer">
+                    <!-- Back Button for Chat -->
+                    <div v-if="messages.length > 0" class="chat-back-button-container">
+                        <button @click="goBack" class="chat-back-button">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Go Back
+                        </button>
+                    </div>
                     <div v-for="(message, index) in messages" :key="index" class="message" :class="message.type">
                         <div class="message-avatar">
                             <i :class="message.type === 'user' ? 'fa-solid fa-user' : 'fa-solid fa-robot'"></i>
@@ -221,6 +236,74 @@ body {
     overflow: hidden;
     margin-bottom: 20px;
     max-height: 600px;
+    position: relative;
+}
+
+/* Back Button */
+.back-button-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+.back-button {
+    background: none;
+    color: #2c3e50;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+
+.back-button:hover {
+    background: rgba(44, 62, 80, 0.05);
+    color: #1a252f;
+}
+
+.back-button i {
+    font-size: 12px;
+}
+
+/* Chat Back Button */
+.chat-back-button-container {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 10px 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    z-index: 10;
+}
+
+.chat-back-button {
+    background: none;
+    color: #2c3e50;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+
+.chat-back-button:hover {
+    background: rgba(44, 62, 80, 0.05);
+    color: #1a252f;
+}
+
+.chat-back-button i {
+    font-size: 12px;
 }
 
 .welcome-section {
@@ -234,6 +317,7 @@ body {
     color: #f0b6c1;
     margin-bottom: 24px;
 }
+
 
 .welcome-section h2 {
     font-size: 2rem;

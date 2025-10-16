@@ -83,7 +83,7 @@ body {
 }
 
 .section-title {
-    color: #262c67;
+    color: #2c3e50;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -162,7 +162,7 @@ body {
 }
 
 .featured-title {
-    color: #262c67;
+    color: #2c3e50;
     font-weight: 700;
     font-size: 1.2rem;
     text-align: center;
@@ -198,7 +198,7 @@ body {
 }
 
 .podcast-title {
-    color: #262c67;
+    color: #2c3e50;
     font-weight: 600;
     font-size: 1rem;
     text-align: center;

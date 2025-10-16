@@ -263,7 +263,7 @@ watch(searchText, () => {
 .podcast-title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: #262c67;
+    color: #2c3e50;
     margin: 0 0 8px 0;
 }
 
@@ -302,7 +302,7 @@ watch(searchText, () => {
 
 .rating-section h3 {
     margin: 0 0 16px 0;
-    color: #262c67;
+    color: #2c3e50;
     font-size: 1.2rem;
 }
 
@@ -350,7 +350,7 @@ watch(searchText, () => {
 .episodes-title {
     font-size: 28px;
     font-weight: bold;
-    color: #262c67;
+    color: #2c3e50;
     margin: 0;
 }
 
@@ -372,9 +372,9 @@ watch(searchText, () => {
 }
 
 .sort-select {
-    padding: 8px 12px;
+    padding: 12px 12px;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 14px;
     background: white;
     color: #333;
@@ -384,12 +384,12 @@ watch(searchText, () => {
 
 .sort-select:focus {
     outline: none;
-    border-color: #262c67;
-    box-shadow: 0 0 0 2px rgba(38, 44, 103, 0.1);
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
 .sort-select:hover {
-    border-color: #262c67;
+    border-color: #2c3e50;
 }
 
 .search-input-wrapper {
@@ -419,8 +419,8 @@ watch(searchText, () => {
 
 .search-input:focus {
     outline: none;
-    border-color: #262c67;
-    box-shadow: 0 0 0 2px rgba(38, 44, 103, 0.1);
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
 .clear-btn {
@@ -455,7 +455,7 @@ watch(searchText, () => {
     padding: 16px 20px;
     text-align: left;
     font-weight: 600;
-    color: #262c67;
+    color: #2c3e50;
     border-bottom: 2px solid #e9ecef;
     font-size: 15px;
 }
@@ -480,7 +480,7 @@ watch(searchText, () => {
 .episode-title-cell {
     padding: 16px 20px;
     font-weight: 600;
-    color: #262c67;
+    color: #2c3e50;
     font-size: 15px;
     line-height: 1.4;
     max-width: 200px;

@@ -22,16 +22,6 @@
                     {{ selectedEntry.content }}
                 </div>
 
-                <!-- AI Response Section -->
-                <div class="ai-response-section">
-                    <button @click="showAIResponse = !showAIResponse" class="ai-response-btn">
-                        <i class="fa-solid fa-robot"></i>
-                        Get AI Support Response
-                    </button>
-
-                    <AITreeHoleResponse v-if="showAIResponse" :userThought="selectedEntry.content"
-                        @close="showAIResponse = false" />
-                </div>
 
                 <button @click="goBack" class="back-btn">← Go Back</button>
             </div>
@@ -106,7 +96,6 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import treeholeData from '@/data/treehole-data.json'
-import AITreeHoleResponse from '@/components/AITreeHoleResponse.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -117,7 +106,6 @@ const searchText = ref('')
 const sortBy = ref('id')
 const currentPage = ref(1)
 const itemsPerPage = 10
-const showAIResponse = ref(false)
 
 // Select an entry to show content
 const selectEntry = (entry) => {
@@ -309,12 +297,27 @@ onMounted(() => {
 })
 </script>
 
+<style>
+/* Global styles to prevent white bars */
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #f8d7da 0%, #f0b6c1 25%, #e8a8b8 50%, #e0a0b0 75%, #d898a8 100%) !important;
+}
+
+#app {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+}
+</style>
+
 <style scoped>
 .treehole-root {
     --nav-h: 64px;
-    min-height: calc(100vh - var(--nav-h));
-    padding: 84px 24px 24px;
-    background: white;
+    min-height: 100vh;
+    padding: 84px 24px 0;
+    background: linear-gradient(135deg, #f8d7da 0%, #f0b6c1 25%, #e8a8b8 50%, #e0a0b0 75%, #d898a8 100%);
     /* Smooth transitions to reduce page jumping */
     transition: all 0.2s ease;
 }
@@ -336,7 +339,7 @@ onMounted(() => {
 .page-title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: #262c67;
+    color: #2c3e50;
     margin: 0 0 16px 0;
 }
 
@@ -352,7 +355,7 @@ onMounted(() => {
     top: 100px;
     right: 30px;
     background: none;
-    color: #262c67;
+    color: #2c3e50;
     border: none;
     padding: 0;
     font-size: 1rem;
@@ -361,12 +364,12 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     z-index: 1000;
 }
 
 .add-button:hover {
-    color: #1a1f4a;
+    color: #1a252f;
     opacity: 0.8;
 }
 
@@ -390,7 +393,7 @@ onMounted(() => {
 .table-title {
     font-size: 28px;
     font-weight: bold;
-    color: #262c67;
+    color: #2c3e50;
     margin: 0;
 }
 
@@ -413,9 +416,9 @@ onMounted(() => {
 }
 
 .sort-select {
-    padding: 8px 12px;
+    padding: 12px 12px;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 14px;
     background: white;
     color: #333;
@@ -425,12 +428,12 @@ onMounted(() => {
 
 .sort-select:focus {
     outline: none;
-    border-color: #262c67;
-    box-shadow: 0 0 0 2px rgba(38, 44, 103, 0.1);
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
 .sort-select:hover {
-    border-color: #262c67;
+    border-color: #2c3e50;
 }
 
 
@@ -461,8 +464,8 @@ onMounted(() => {
 
 .search-input:focus {
     outline: none;
-    border-color: #262c67;
-    box-shadow: 0 0 0 2px rgba(38, 44, 103, 0.1);
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
 }
 
 .clear-btn {
@@ -508,7 +511,7 @@ onMounted(() => {
     padding: 16px 20px;
     text-align: left;
     font-weight: 600;
-    color: #262c67;
+    color: #2c3e50;
     border-bottom: 2px solid #e9ecef;
     font-size: 15px;
 }
@@ -541,7 +544,7 @@ onMounted(() => {
 .thought-keyword-cell {
     padding: 16px 20px;
     font-weight: 600;
-    color: #262c67;
+    color: #2c3e50;
     font-size: 15px;
     line-height: 1.4;
     max-width: 200px;
@@ -561,7 +564,7 @@ onMounted(() => {
 }
 
 .read-btn {
-    background: #262c67;
+    background: #2c3e50;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -637,13 +640,13 @@ onMounted(() => {
 
 .back-btn {
     background: none;
-    color: #262c67;
+    color: #2c3e50;
     border: none;
     padding: 0;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 700;
-    transition: opacity 0.3s ease;
+    transition: all 0.2s ease;
     display: inline-block;
     position: absolute;
     bottom: 20px;
@@ -651,13 +654,14 @@ onMounted(() => {
 }
 
 .back-btn:hover {
-    opacity: 0.7;
+    color: #1a252f;
+    opacity: 0.8;
 }
 
 .content-title {
     font-size: 2.2rem;
     font-weight: 700;
-    color: #262c67;
+    color: #2c3e50;
     margin: 0;
     line-height: 1.3;
     text-align: center;
@@ -671,35 +675,6 @@ onMounted(() => {
     margin-bottom: 30px;
 }
 
-.ai-response-section {
-    margin: 30px 0;
-    text-align: center;
-}
-
-.ai-response-btn {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-}
-
-.ai-response-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-}
-
-.ai-response-btn:active {
-    transform: translateY(0);
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
