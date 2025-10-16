@@ -6,8 +6,9 @@
                 <router-link to="/live" class="back-btn">
                     ← Back to All Events
                 </router-link>
-                <button @click="downloadPDF" class="download-btn" :disabled="isDownloading">
-                    {{ isDownloading ? 'Generating...' : '📄 Download PDF' }}
+                <button @click="downloadPDF" class="download-link" :disabled="isDownloading">
+                    <i class="fa-solid fa-download"></i>
+                    <span>{{ isDownloading ? 'Generating...' : 'Download PDF' }}</span>
                 </button>
             </div>
 
@@ -342,7 +343,7 @@ export default {
 }
 
 .back-btn {
-    color: #4a4a4a;
+    color: #2c3e50;
     text-decoration: none;
     font-weight: 600;
     font-size: 1rem;
@@ -353,28 +354,34 @@ export default {
 }
 
 .back-btn:hover {
-    color: #666666;
+    color: #1a1f4a;
 }
 
-.download-btn {
-    background: #2c3e50;
-    color: white;
+.download-link {
+    background: none;
     border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
+    color: #2c3e50;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: color 0.2s ease;
     font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
 }
 
-.download-btn:hover:not(:disabled) {
-    background: #34495e;
+.download-link:hover:not(:disabled) {
+    color: #1a1f4a;
 }
 
-.download-btn:disabled {
-    background: #95a5a6;
+.download-link:disabled {
+    color: #95a5a6;
     cursor: not-allowed;
+}
+
+.download-link i {
+    font-size: 1rem;
 }
 
 /* Event Title */
@@ -463,7 +470,7 @@ export default {
 }
 
 .navigate-btn {
-    color: #262c67;
+    color: #2c3e50;
 }
 
 .navigate-btn:hover {

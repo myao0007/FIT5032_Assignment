@@ -63,16 +63,26 @@
                     </div>
                 </div>
 
-                <!-- Episodes List -->
-                <div class="episodes-list">
-                    <div v-for="episode in currentPageEpisodes" :key="episode.title" class="episode-card">
-                        <div class="episode-header">
-                            <h3 class="episode-title">{{ episode.title }}</h3>
-                            <span class="episode-duration">{{ episode.length }}</span>
-                        </div>
-                        <p class="episode-author">By {{ episode.author }}</p>
-                        <p class="episode-summary">{{ episode.summary }}</p>
-                    </div>
+                <!-- Episodes Table -->
+                <div class="episodes-table-container">
+                    <table class="episodes-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Length</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="episode in currentPageEpisodes" :key="episode.title" class="episode-row">
+                                <td class="episode-title-cell">{{ episode.title }}</td>
+                                <td class="episode-author-cell">{{ episode.author }}</td>
+                                <td class="episode-length-cell">{{ episode.length }}</td>
+                                <td class="episode-summary-cell">{{ episode.summary }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Simple Pagination -->
@@ -125,7 +135,7 @@ const episodes = ref([])
 const searchText = ref('')
 const sortBy = ref('title')
 const currentPage = ref(1)
-const itemsPerPage = 5
+const itemsPerPage = 10
 
 // Load episodes data
 onMounted(() => {
@@ -149,7 +159,10 @@ const filteredEpisodes = computed(() => {
     return filtered.sort((a, b) => {
         switch (sortBy.value) {
             case 'title':
-                return a.title.localeCompare(b.title)
+                // Extract episode numbers for proper numerical sorting
+                const aEpisodeNum = parseInt(a.title.match(/\d+/)?.[0] || '0')
+                const bEpisodeNum = parseInt(b.title.match(/\d+/)?.[0] || '0')
+                return aEpisodeNum - bEpisodeNum
             case 'author':
                 return a.author.localeCompare(b.author)
             case 'length':
@@ -419,64 +432,80 @@ watch(searchText, () => {
     height: 24px;
 }
 
-/* Episodes List Styles */
-.episodes-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.episode-card {
+/* Episodes Table Styles */
+.episodes-table-container {
     background: white;
     border-radius: 12px;
-    padding: 24px;
+    overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     border: 1px solid #f0f0f0;
-    transition: box-shadow 0.2s ease;
 }
 
-.episode-card:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+.episodes-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
 }
 
-.episode-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
+.episodes-table thead {
+    background: #f8f9fa;
 }
 
-.episode-title {
-    font-size: 20px;
+.episodes-table th {
+    padding: 16px 20px;
+    text-align: left;
     font-weight: 600;
     color: #262c67;
-    margin: 0;
-    flex: 1;
-    line-height: 1.3;
-}
-
-.episode-duration {
-    background: #f0f0f0;
-    color: #666;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    margin-left: 16px;
-}
-
-.episode-author {
-    color: #888;
-    font-size: 14px;
-    margin: 0 0 16px 0;
-    font-style: italic;
-}
-
-.episode-summary {
-    color: #555;
-    line-height: 1.6;
-    margin: 0;
+    border-bottom: 2px solid #e9ecef;
     font-size: 15px;
+}
+
+.episodes-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.episodes-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.episodes-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.episode-row {
+    cursor: pointer;
+}
+
+.episode-title-cell {
+    padding: 16px 20px;
+    font-weight: 600;
+    color: #262c67;
+    font-size: 15px;
+    line-height: 1.4;
+    max-width: 200px;
+}
+
+.episode-author-cell {
+    padding: 16px 20px;
+    color: #888;
+    font-style: italic;
+    max-width: 150px;
+}
+
+.episode-length-cell {
+    padding: 16px 20px;
+    color: #666;
+    font-weight: 500;
+    text-align: center;
+    min-width: 80px;
+}
+
+.episode-summary-cell {
+    padding: 16px 20px;
+    color: #555;
+    line-height: 1.5;
+    max-width: 300px;
 }
 
 /* Simple Pagination */

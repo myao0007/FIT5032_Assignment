@@ -1,32 +1,19 @@
 <template>
     <div class="treehole-root">
         <div class="container">
-        <!-- Page Title -->
-        <div class="page-header">
-            <h1 class="page-title">Tree Hole</h1>
-            <p class="page-subtitle">Click on any keyword to read someone's thoughts</p>
-        </div>
-
-        <!-- Add Button in Top Right Corner -->
-        <button @click="goToSharePage" class="add-button">
-            <span class="add-icon">+</span>
-            Share Your Thoughts
-        </button>
-
-        <!-- Keywords Area - Horizontal Flow Style -->
-        <div class="keywords-area" v-if="!selectedEntry">
-            <div 
-                v-for="entry in treeholeData" 
-                :key="entry.id"
-                class="keyword-item flow-item"
-                :class="getKeywordClass(entry.id)"
-                @click="selectEntry(entry)"
-            >
-                {{ entry.keyword }}
+            <!-- Page Title -->
+            <div class="page-header">
+                <h1 class="page-title">Tree Hole</h1>
+                <p class="page-subtitle">Share your thoughts anonymously in a judgment-free zone</p>
             </div>
-        </div>
 
-            <!-- Content Area -->
+            <!-- Add Button in Top Right Corner -->
+            <button @click="goToSharePage" class="add-button">
+                <span class="add-icon">+</span>
+                Share Your Thoughts
+            </button>
+
+            <!-- Content Area (when viewing a specific entry) -->
             <div class="content-area" v-if="selectedEntry">
                 <div class="content-header">
                     <h2 class="content-title">{{ selectedEntry.keyword }}</h2>
@@ -36,12 +23,75 @@
                 </div>
                 <button @click="goBack" class="back-btn">← Go Back</button>
             </div>
+
+            <!-- Table Area (when not viewing specific entry) -->
+            <div class="table-area" v-if="!selectedEntry">
+                <!-- Table Header with controls -->
+                <div class="table-header">
+                    <h2 class="table-title">Thoughts & Stories</h2>
+                    <div class="controls-box">
+                        <div class="search-box">
+                            <div class="search-input-wrapper">
+                                <i class="pi pi-search search-icon"></i>
+                                <input v-model="searchText" placeholder="Search thoughts..." class="search-input" />
+                                <button v-if="searchText" @click="clearSearch" class="clear-btn">
+                                    ×
+                                </button>
+                            </div>
+                        </div>
+                        <div class="sort-box">
+                            <select v-model="sortBy" class="sort-select">
+                                <option value="id">Sort by ID</option>
+                                <option value="keyword">Sort by Keyword</option>
+                                <option value="content">Sort by Content</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thoughts Table -->
+                <div class="thoughts-table-container">
+                    <table class="thoughts-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Keyword</th>
+                                <th>Preview</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="entry in currentPageEntries" :key="entry.id" class="thought-row">
+                                <td class="thought-id-cell">{{ entry.id }}</td>
+                                <td class="thought-keyword-cell">{{ entry.keyword }}</td>
+                                <td class="thought-preview-cell">{{ getPreview(entry.content) }}</td>
+                                <td class="thought-actions-cell">
+                                    <button @click="selectEntry(entry)" class="read-btn">
+                                        Read Full
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1" class="page-btn">
+                        &lt;
+                    </button>
+                    <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+                    <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages" class="page-btn">
+                        &gt;
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import treeholeData from '@/data/treehole-data.json'
 
@@ -50,13 +100,17 @@ const route = useRoute()
 
 // Reactive data
 const selectedEntry = ref(null)
+const searchText = ref('')
+const sortBy = ref('id')
+const currentPage = ref(1)
+const itemsPerPage = 10
 
 // Select an entry to show content
 const selectEntry = (entry) => {
     selectedEntry.value = entry
 }
 
-// Go back to keywords view
+// Go back to table view
 const goBack = () => {
     selectedEntry.value = null
 }
@@ -75,12 +129,86 @@ const goToSharePage = () => {
             currentEntry: null
         }))
     }
-    
+
     // Navigate to share page
     router.push('/share-thoughts')
 }
 
-// No need for position generation with flow layout
+// Filter and sort entries
+const filteredEntries = computed(() => {
+    let filtered = treeholeData
+
+    // Filter by search text
+    if (searchText.value) {
+        filtered = filtered.filter(entry =>
+            entry.keyword.toLowerCase().includes(searchText.value.toLowerCase()) ||
+            entry.content.toLowerCase().includes(searchText.value.toLowerCase())
+        )
+    }
+
+    // Sort entries
+    const sorted = filtered.sort((a, b) => {
+        switch (sortBy.value) {
+            case 'id':
+                return a.id - b.id
+            case 'keyword':
+                return a.keyword.localeCompare(b.keyword)
+            case 'content':
+                return a.content.localeCompare(b.content)
+            default:
+                return 0
+        }
+    })
+
+    // Debug: log the first few items to see if sorting is working
+    if (sorted.length > 0) {
+        console.log('Sorting by:', sortBy.value)
+        console.log('First 3 items:', sorted.slice(0, 3).map(item => ({ id: item.id, keyword: item.keyword })))
+    }
+
+    return sorted
+})
+
+// Calculate total pages
+const totalPages = computed(() => {
+    return Math.ceil(filteredEntries.value.length / itemsPerPage)
+})
+
+// Get entries for current page
+const currentPageEntries = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage
+    const end = start + itemsPerPage
+    return filteredEntries.value.slice(start, end)
+})
+
+// Get preview of content (first 100 characters)
+const getPreview = (content) => {
+    return content.length > 100 ? content.substring(0, 100) + '...' : content
+}
+
+// Clear search
+const clearSearch = () => {
+    searchText.value = ''
+    currentPage.value = 1
+}
+
+
+// Go to specific page
+const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page
+    }
+}
+
+// Reset to page 1 when search changes
+watch(searchText, () => {
+    currentPage.value = 1
+})
+
+// Reset to page 1 when sort changes
+watch(sortBy, () => {
+    currentPage.value = 1
+})
 
 // Generate different classes for word cloud effect - colorful (60 items)
 const getKeywordClass = (id) => {
@@ -146,7 +274,7 @@ const getKeywordClass = (id) => {
         'size-medium color-yellow',   // 59
         'size-small color-gray'       // 60
     ]
-    
+
     return classes[id - 1] || 'size-medium color-blue'
 }
 
@@ -233,97 +361,247 @@ onMounted(() => {
     font-weight: 900;
 }
 
-/* Keywords Area - Natural Flow Style */
-.keywords-area {
-    width: 100%;
-    background: white;
-    padding: 20px;
+/* Table Area Styles */
+.table-area {
+    margin-top: 40px;
+}
+
+.table-header {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px 20px;
-    align-items: baseline;
-    justify-content: flex-start;
-    line-height: 2.4;
-    text-align: left;
-    align-content: flex-start;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
 }
 
-.flow-item {
-    display: inline-block;
-    padding: 2px 6px;
-    font-weight: 600;
+.table-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #262c67;
+    margin: 0;
+}
+
+.controls-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    color: #333;
     cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    background: transparent;
+    transition: border-color 0.2s ease;
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: #262c67;
+    box-shadow: 0 0 0 2px rgba(38, 44, 103, 0.1);
+}
+
+.sort-select:hover {
+    border-color: #262c67;
+}
+
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    color: #666;
+    font-size: 14px;
+    z-index: 1;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #262c67;
+    box-shadow: 0 0 0 2px rgba(38, 44, 103, 0.1);
+}
+
+.clear-btn {
+    position: absolute;
+    right: 8px;
+    background: none;
     border: none;
-    border-radius: 0;
-    box-shadow: none;
-    margin: 2px 1px;
-    vertical-align: baseline;
+    color: #666;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Different sizes for natural flow layout */
-.size-large {
-    font-size: 1.4rem;
-    margin-top: -2px;
+.clear-btn:hover {
+    color: #333;
 }
 
-.size-medium {
-    font-size: 1.1rem;
-    margin-top: 1px;
+/* Thoughts Table Styles */
+.thoughts-table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0;
 }
 
-.size-small {
-    font-size: 0.85rem;
-    margin-top: 3px;
+.thoughts-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
 }
 
-/* Different colors - only text colors */
-.color-blue {
-    color: #1976d2;
+.thoughts-table thead {
+    background: #f8f9fa;
 }
 
-.color-orange {
-    color: #f57c00;
+.thoughts-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: #262c67;
+    border-bottom: 2px solid #e9ecef;
+    font-size: 15px;
 }
 
-.color-pink {
-    color: #c2185b;
+.thoughts-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
 }
 
-.color-green {
-    color: #388e3c;
+.thoughts-table tbody tr:hover {
+    background-color: #f8f9fa;
 }
 
-.color-purple {
-    color: #7b1fa2;
+.thoughts-table tbody tr:last-child {
+    border-bottom: none;
 }
 
-.color-red {
-    color: #d32f2f;
+.thought-row {
+    cursor: pointer;
 }
 
-.color-teal {
-    color: #00796b;
+.thought-id-cell {
+    padding: 16px 20px;
+    color: #666;
+    font-weight: 500;
+    text-align: center;
+    min-width: 60px;
 }
 
-.color-indigo {
-    color: #303f9f;
+.thought-keyword-cell {
+    padding: 16px 20px;
+    font-weight: 600;
+    color: #262c67;
+    font-size: 15px;
+    line-height: 1.4;
+    max-width: 200px;
 }
 
-.color-yellow {
-    color: #f9a825;
+.thought-preview-cell {
+    padding: 16px 20px;
+    color: #555;
+    line-height: 1.5;
+    max-width: 400px;
 }
 
-.color-gray {
-    color: #616161;
+.thought-actions-cell {
+    padding: 16px 20px;
+    text-align: center;
+    min-width: 100px;
 }
 
-/* Hover effects for flow items */
-.flow-item:hover {
-    transform: scale(1.05);
-    opacity: 0.8;
+.read-btn {
+    background: #262c67;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.read-btn:hover {
+    background: #1a1f4a;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+    padding: 16px 0;
+}
+
+.page-btn {
+    background: white;
+    border: 1px solid #ddd;
+    color: #666;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #f0f0f0;
+    color: #333;
+    border-color: #ccc;
+}
+
+.page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-info {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 
@@ -384,17 +662,17 @@ onMounted(() => {
     .page-title {
         font-size: 2rem;
     }
-    
+
     .keyword-item {
         font-size: 0.9rem;
         padding: 10px 16px;
         max-width: 150px;
     }
-    
+
     .content-area {
         padding: 30px 20px;
     }
-    
+
     .content-title {
         font-size: 1.5rem;
     }

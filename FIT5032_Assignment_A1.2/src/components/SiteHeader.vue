@@ -2,7 +2,8 @@
   <nav class="she-navbar fixed-top">
     <div class="nav-inner">
 
-      <router-link to="/" class="brand">SHE</router-link>
+      <router-link to="/" class="brand"><span class="brand-she">She</span><span
+          class="brand-talks">Talks</span></router-link>
 
 
       <ul class="menu">
@@ -70,16 +71,26 @@ const handleLogout = async () => {
 .brand {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #4a4a4a;
   text-decoration: none;
   line-height: 1;
   white-space: nowrap;
-  transition: color .2s ease;
+  transition: all .2s ease;
 }
 
-.brand:hover {
-  color: #666666 !important;
-  /* Light gray on hover */
+.brand-she {
+  color: #ffb6c1;
+}
+
+.brand-talks {
+  color: #2c3e50;
+}
+
+.brand:hover .brand-she {
+  color: #ff91a4;
+}
+
+.brand:hover .brand-talks {
+  color: #1a1f4a;
 }
 
 
@@ -106,7 +117,7 @@ const handleLogout = async () => {
 
 
 .nav-link {
-  color: #4a4a4a !important;
+  color: #2c3e50 !important;
   /* Dark gray color for all nav links */
   font-weight: 700;
   text-decoration: none;
@@ -115,14 +126,13 @@ const handleLogout = async () => {
 }
 
 .nav-link:hover {
-  color: #666666 !important;
-  /* Light gray on hover without background */
+  color: #1a1f4a !important;
 }
 
 /* Ensure active state has better styling */
 .router-link-active,
 .router-link-exact-active {
-  color: #4a4a4a !important;
+  color: #2c3e50 !important;
 }
 
 .brand,
@@ -143,12 +153,12 @@ const handleLogout = async () => {
 }
 
 .logout-btn:hover {
-  color: #666666 !important;
+  color: #1a1f4a !important;
 }
 
 /* User info styles */
 .user-info {
-  color: #4a4a4a !important;
+  color: #2c3e50 !important;
   font-weight: 600;
 }
 </style>
