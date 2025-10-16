@@ -21,6 +21,18 @@
                 <div class="content-text">
                     {{ selectedEntry.content }}
                 </div>
+
+                <!-- AI Response Section -->
+                <div class="ai-response-section">
+                    <button @click="showAIResponse = !showAIResponse" class="ai-response-btn">
+                        <i class="fa-solid fa-robot"></i>
+                        Get AI Support Response
+                    </button>
+
+                    <AITreeHoleResponse v-if="showAIResponse" :userThought="selectedEntry.content"
+                        @close="showAIResponse = false" />
+                </div>
+
                 <button @click="goBack" class="back-btn">← Go Back</button>
             </div>
 
@@ -94,6 +106,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import treeholeData from '@/data/treehole-data.json'
+import AITreeHoleResponse from '@/components/AITreeHoleResponse.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -104,6 +117,7 @@ const searchText = ref('')
 const sortBy = ref('id')
 const currentPage = ref(1)
 const itemsPerPage = 10
+const showAIResponse = ref(false)
 
 // Select an entry to show content
 const selectEntry = (entry) => {
@@ -654,7 +668,37 @@ onMounted(() => {
     line-height: 1.8;
     color: #333;
     text-align: justify;
-    margin-bottom: 60px;
+    margin-bottom: 30px;
+}
+
+.ai-response-section {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.ai-response-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.ai-response-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.ai-response-btn:active {
+    transform: translateY(0);
 }
 
 /* Responsive Design */

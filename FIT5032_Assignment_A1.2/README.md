@@ -16,6 +16,30 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm install
 ```
 
+### Environment Variables Setup
+
+**⚠️ IMPORTANT: Configure API keys before running the application**
+
+1. **Quick Setup (Recommended):**
+   ```sh
+   ./setup-env.sh
+   ```
+
+2. **Manual Setup:**
+   ```sh
+   cp env.template .env.local
+   # Edit .env.local with your actual API keys
+   ```
+
+3. **Required API Keys:**
+   - **Gemini AI**: Get free API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - **SendGrid** (optional): For email features
+
+4. **Security Note:**
+   - `.env.local` is already in `.gitignore`
+   - Never commit API keys to Git
+   - See `GEMINI_AI_SETUP.md` for detailed instructions
+
 ### Compile and Hot-Reload for Development
 
 ```sh

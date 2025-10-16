@@ -21,6 +21,7 @@
                 </div>
             </section>
 
+
             <!-- Regular Podcasts Grid -->
             <section class="podcasts-section">
                 <h2 class="section-title">All Podcasts</h2>
@@ -37,7 +38,6 @@
 
 <script setup>
 
-
 const podcasts = [
     { title: "Midnight Heart Talks" },
     { title: "Her Growth Diary" },
@@ -52,12 +52,29 @@ const podcasts = [
 ];
 </script>
 
+<style>
+/* Global styles to prevent pink bars */
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+}
+
+#app {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+}
+</style>
+
 <style scoped>
 .podcasts-root {
     --nav-h: 64px;
-    min-height: calc(100vh - var(--nav-h));
-    padding: 84px 24px 24px;
+    min-height: 100vh;
+    padding: 84px 24px 0;
     background: white;
+    margin: 0;
+    overflow-x: hidden;
 }
 
 .container {
@@ -67,6 +84,9 @@ const podcasts = [
 
 .section-title {
     color: #262c67;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-weight: 800;
     font-size: 1.8rem;
     margin-bottom: 24px;
@@ -152,7 +172,8 @@ const podcasts = [
 
 /* Regular Podcasts Section */
 .podcasts-section {
-    margin-bottom: 32px;
+    margin-bottom: 0;
+    padding-bottom: 40px;
 }
 
 .podcasts-grid {

@@ -13,6 +13,8 @@ import EventView from '@/views/EventView.vue'
 import EventDetailView from '@/views/EventDetailView.vue'
 import BookingView from '@/views/BookingView.vue'
 import FirestoreTestView from '@/views/FirestoreTestView.vue'
+import AITestView from '@/views/AITestView.vue'
+import AIConsultationView from '@/views/AIConsultationView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
@@ -34,6 +36,8 @@ const router = createRouter({
     { path: '/event/:id', name: 'event-detail', component: EventDetailView },
     { path: '/booking/:id', name: 'booking', component: BookingView },
     { path: '/firestore-test', name: 'firestore-test', component: FirestoreTestView },
+    { path: '/ai-test', name: 'ai-test', component: AITestView },
+    { path: '/ai-consultation', name: 'ai-consultation', component: AIConsultationView },
     { path: '/home', name: 'home', component: HomeView },
 
     { path: '/login', name: 'login', component: LoginView, meta: { guestOnly: true } },

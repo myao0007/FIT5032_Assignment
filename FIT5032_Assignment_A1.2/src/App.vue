@@ -1,10 +1,12 @@
 <template>
   <SiteHeader />
   <router-view />
+  <AIFloatingButton />
 </template>
 
 <script setup>
 import SiteHeader from '@/components/SiteHeader.vue'
+import AIFloatingButton from '@/components/AIFloatingButton.vue'
 </script>
 
 <style>
