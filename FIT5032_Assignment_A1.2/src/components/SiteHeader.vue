@@ -13,7 +13,8 @@
         <li><router-link to="/discover" class="nav-link">Discover</router-link></li>
         <li><router-link to="/curve" class="nav-link">Emotional Curve</router-link></li>
         <li><router-link to="/cocreation" class="nav-link">Co-Creation</router-link></li>
-        <li><router-link to="/profile" class="nav-link">Manage</router-link></li>
+        <li v-if="authComputed.isAdmin.value"><router-link to="/admin-dashboard" class="nav-link">Manage</router-link>
+        </li>
         <li><router-link to="/about" class="nav-link">About Policies</router-link></li>
       </ul>
 
@@ -149,7 +150,8 @@ const handleLogout = async () => {
   cursor: pointer;
   padding: 0;
   font-size: inherit;
-  font-weight: inherit;
+  font-weight: 800;
+  /* 加粗字体 */
 }
 
 .logout-btn:hover {

@@ -17,7 +17,7 @@ import AITestView from '@/views/AITestView.vue'
 import AIConsultationView from '@/views/AIConsultationView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
-import ProfileView from '@/views/ProfileView.vue'
+import AdminDashboardView from '@/views/AdminDashboardView.vue'
 
 import { authComputed, initAuth } from '@/store/userAuth.js'
 
@@ -44,7 +44,7 @@ const router = createRouter({
     { path: '/register', name: 'register', component: RegisterView, meta: { guestOnly: true } },
 
     // Admin only
-    { path: '/profile', name: 'profile', component: ProfileView, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/admin-dashboard', name: 'admin-dashboard', component: AdminDashboardView, meta: { requiresAuth: true, requiresAdmin: true } },
 
     { path: '/:pathMatch(.*)*', redirect: '/home' }
   ]
@@ -67,7 +67,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.guestOnly && isLoggedIn) {
     // If user is already logged in, redirect to appropriate page
     if (isAdmin) {
-      return next({ name: 'profile' })
+      return next({ name: 'admin-dashboard' })
     } else {
       return next({ name: 'home' })
     }

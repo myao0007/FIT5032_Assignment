@@ -26,8 +26,14 @@
                 <button @click="goBack" class="back-btn">← Go Back</button>
             </div>
 
+            <!-- Loading State -->
+            <div v-if="loading" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Loading thoughts...</p>
+            </div>
+
             <!-- Table Area (when not viewing specific entry) -->
-            <div class="table-area" v-if="!selectedEntry">
+            <div class="table-area" v-if="!selectedEntry && !loading">
                 <!-- Table Header with controls -->
                 <div class="table-header">
                     <h2 class="table-title">Thoughts & Stories</h2>
@@ -95,6 +101,8 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { collection, getDocs, query, orderBy, onSnapshot } from 'firebase/firestore'
+import { db } from '@/firebase/config.js'
 import treeholeData from '@/data/treehole-data.json'
 
 const router = useRouter()
@@ -106,6 +114,8 @@ const searchText = ref('')
 const sortBy = ref('id')
 const currentPage = ref(1)
 const itemsPerPage = 10
+const thoughts = ref([])
+const loading = ref(true)
 
 // Select an entry to show content
 const selectEntry = (entry) => {
@@ -138,7 +148,7 @@ const goToSharePage = () => {
 
 // Filter and sort entries
 const filteredEntries = computed(() => {
-    let filtered = treeholeData
+    let filtered = thoughts.value
 
     // Filter by search text
     if (searchText.value) {
@@ -152,7 +162,18 @@ const filteredEntries = computed(() => {
     const sorted = filtered.sort((a, b) => {
         switch (sortBy.value) {
             case 'id':
-                return a.id - b.id
+                // Static data first (by original ID), then user posts (by creation time)
+                if (!a.isUserPost && !b.isUserPost) {
+                    return a.id - b.id // Static data by original ID
+                } else if (a.isUserPost && b.isUserPost) {
+                    const aTime = a.createdAt?.toDate?.() || new Date(a.createdAt)
+                    const bTime = b.createdAt?.toDate?.() || new Date(b.createdAt)
+                    return aTime - bTime // User posts by creation time (oldest first)
+                } else if (!a.isUserPost && b.isUserPost) {
+                    return -1 // Static data first
+                } else {
+                    return 1 // User posts after static data
+                }
             case 'keyword':
                 return a.keyword.localeCompare(b.keyword)
             case 'content':
@@ -161,12 +182,6 @@ const filteredEntries = computed(() => {
                 return 0
         }
     })
-
-    // Debug: log the first few items to see if sorting is working
-    if (sorted.length > 0) {
-        console.log('Sorting by:', sortBy.value)
-        console.log('First 3 items:', sorted.slice(0, 3).map(item => ({ id: item.id, keyword: item.keyword })))
-    }
 
     return sorted
 })
@@ -194,6 +209,80 @@ const clearSearch = () => {
     currentPage.value = 1
 }
 
+// Fetch thoughts from Firestore and combine with static data
+const fetchThoughts = async () => {
+    try {
+        loading.value = true
+        const thoughtsRef = collection(db, 'treehole')
+        const q = query(thoughtsRef, orderBy('createdAt', 'desc'))
+        const querySnapshot = await getDocs(q)
+
+        // Get user posts from Firestore and sort by creation time (oldest first)
+        const sortedDocs = querySnapshot.docs.sort((a, b) => {
+            const aTime = a.data().createdAt?.toDate?.() || new Date(a.data().createdAt)
+            const bTime = b.data().createdAt?.toDate?.() || new Date(b.data().createdAt)
+            return aTime - bTime // Oldest first
+        })
+
+        const userPosts = sortedDocs.map((doc, index) => ({
+            id: treeholeData.length + index + 1, // Start IDs after static data, in chronological order
+            keyword: doc.data().keyword,
+            content: doc.data().content,
+            author: doc.data().author,
+            createdAt: doc.data().createdAt,
+            status: doc.data().status || 'published',
+            docId: doc.id, // Keep original document ID
+            isUserPost: true // Mark as user-generated content
+        }))
+
+        // Combine static data with user posts
+        thoughts.value = [...treeholeData, ...userPosts]
+
+        console.log('Static data:', treeholeData.length, 'User posts:', userPosts.length, 'Total:', thoughts.value.length)
+    } catch (error) {
+        console.error('Error fetching thoughts:', error)
+        // Fallback to static data only if Firestore fails
+        thoughts.value = treeholeData
+    } finally {
+        loading.value = false
+    }
+}
+
+// Set up real-time listener for thoughts
+const setupRealtimeListener = () => {
+    const thoughtsRef = collection(db, 'treehole')
+    const q = query(thoughtsRef, orderBy('createdAt', 'desc'))
+
+    onSnapshot(q, (querySnapshot) => {
+        // Get user posts from Firestore and sort by creation time (oldest first)
+        const sortedDocs = querySnapshot.docs.sort((a, b) => {
+            const aTime = a.data().createdAt?.toDate?.() || new Date(a.data().createdAt)
+            const bTime = b.data().createdAt?.toDate?.() || new Date(b.data().createdAt)
+            return aTime - bTime // Oldest first
+        })
+
+        const userPosts = sortedDocs.map((doc, index) => ({
+            id: treeholeData.length + index + 1, // Start IDs after static data, in chronological order
+            keyword: doc.data().keyword,
+            content: doc.data().content,
+            author: doc.data().author,
+            createdAt: doc.data().createdAt,
+            status: doc.data().status || 'published',
+            docId: doc.id, // Keep original document ID
+            isUserPost: true // Mark as user-generated content
+        }))
+
+        // Combine static data with user posts
+        thoughts.value = [...treeholeData, ...userPosts]
+        loading.value = false
+    }, (error) => {
+        console.error('Error in real-time listener:', error)
+        // Fallback to static data only if Firestore fails
+        thoughts.value = treeholeData
+        loading.value = false
+    })
+}
+
 
 // Go to specific page
 const goToPage = (page) => {
@@ -210,6 +299,24 @@ watch(searchText, () => {
 // Reset to page 1 when sort changes
 watch(sortBy, () => {
     currentPage.value = 1
+})
+
+// Initialize data on component mount
+onMounted(() => {
+    // Set up real-time listener for thoughts
+    setupRealtimeListener()
+
+    // Check if we need to restore a specific entry
+    const restoreEntry = localStorage.getItem('treehole_restore_entry')
+    if (restoreEntry) {
+        try {
+            const entry = JSON.parse(restoreEntry)
+            selectedEntry.value = entry
+            localStorage.removeItem('treehole_restore_entry')
+        } catch (error) {
+            console.error('Error restoring entry:', error)
+        }
+    }
 })
 
 // Generate different classes for word cloud effect - colorful (60 items)
@@ -695,5 +802,36 @@ body {
     .content-title {
         font-size: 1.5rem;
     }
+}
+
+/* Loading State */
+.loading-container {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f0b6c1;
+    border-top: 4px solid #2c3e50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-container p {
+    color: #666666;
+    font-size: 1.1rem;
 }
 </style>

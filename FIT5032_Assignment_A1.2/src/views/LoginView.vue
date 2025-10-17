@@ -57,7 +57,7 @@ onMounted(() => {
   if (authComputed.isAuthenticated.value) {
     // Redirect based on user role
     if (authComputed.isAdmin.value) {
-      router.push('/profile')
+      router.push('/admin-dashboard')
     } else {
       router.push('/home')
     }
@@ -132,7 +132,7 @@ const submitForm = async () => {
         const profile = await getUserProfile(result.user.uid)
         if (profile.success) role = profile.data.role || 'user'
       } catch (e) { }
-      router.replace(role === 'admin' ? '/profile' : '/home')
+      router.replace(role === 'admin' ? '/admin-dashboard' : '/home')
     } else {
       // Display different error messages based on error type
       if (result.error.includes('user-not-found')) {

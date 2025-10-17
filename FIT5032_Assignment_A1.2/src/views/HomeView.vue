@@ -11,20 +11,6 @@
       </div>
     </section>
 
-    <section class="content-block">
-      <div class="container-fluid py-5">
-        <div class="row g-4">
-          <div class="col-12 col-md-6 col-xl-4" v-for="i in 3" :key="i">
-            <div class="card shadow-sm h-100">
-              <div class="card-body">
-                <h5 class="card-title">Block {{ i }}</h5>
-                <p class="mb-0">Your content here.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </div>
 </template>
 
@@ -58,9 +44,6 @@ watchEffect(() => {
   text-align: center;
 }
 
-.content-block {
-  background: transparent;
-}
 
 .text-block {
   max-width: 600px;

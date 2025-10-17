@@ -12,29 +12,23 @@
                 <form @submit.prevent="submitThought">
                     <div class="form-group">
                         <label for="keyword">Keyword:</label>
-                        <input 
-                            type="text" 
-                            id="keyword" 
-                            v-model="formData.keyword" 
-                            placeholder="Enter your keyword or phrase"
-                            required
-                        />
+                        <input type="text" id="keyword" v-model="formData.keyword"
+                            placeholder="Enter your keyword or phrase" required />
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="content">Your Thoughts:</label>
-                        <textarea 
-                            id="content" 
-                            v-model="formData.content" 
-                            placeholder="Share your thoughts and feelings..."
-                            rows="8"
-                            required
-                        ></textarea>
+                        <textarea id="content" v-model="formData.content"
+                            placeholder="Share your thoughts and feelings..." rows="8" required></textarea>
                     </div>
-                    
+
                     <div class="form-actions">
-                        <button type="button" @click="goBack" class="cancel-btn">Cancel</button>
-                        <button type="submit" class="submit-btn">Share</button>
+                        <button type="button" @click="goBack" class="cancel-btn"
+                            :disabled="isSubmitting">Cancel</button>
+                        <button type="submit" class="submit-btn" :disabled="isSubmitting">
+                            <span v-if="isSubmitting">Sharing...</span>
+                            <span v-else>Share</span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -45,6 +39,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '@/firebase/config.js'
+import { authComputed } from '@/store/userAuth.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -55,13 +52,47 @@ const formData = ref({
     content: ''
 })
 
+// Loading state
+const isSubmitting = ref(false)
+
 // Submit function
-const submitThought = () => {
-    if (formData.value.keyword.trim() && formData.value.content.trim()) {
-        // Here you would typically save to database or localStorage
-        // For now, we'll just show success and go back
+const submitThought = async () => {
+    if (!formData.value.keyword.trim() || !formData.value.content.trim()) {
+        alert('Please fill in both keyword and content fields.')
+        return
+    }
+
+    if (!authComputed.isAuthenticated.value) {
+        alert('Please log in to share your thoughts.')
+        return
+    }
+
+    isSubmitting.value = true
+
+    try {
+        // Save to Firestore
+        const docRef = await addDoc(collection(db, 'treehole'), {
+            keyword: formData.value.keyword.trim(),
+            content: formData.value.content.trim(),
+            author: authComputed.userEmail.value,
+            createdAt: serverTimestamp(),
+            status: 'published'
+        })
+
+        console.log('Tree Hole post saved with ID:', docRef.id)
         alert('Thank you for sharing your thoughts!')
+
+        // Clear form
+        formData.value.keyword = ''
+        formData.value.content = ''
+
+        // Go back to Tree Hole page
         goBack()
+    } catch (error) {
+        console.error('Error saving Tree Hole post:', error)
+        alert('Sorry, there was an error saving your thoughts. Please try again.')
+    } finally {
+        isSubmitting.value = false
     }
 }
 
@@ -80,18 +111,56 @@ const goBack = () => {
             console.error('Error parsing saved state:', error)
         }
     }
-    
+
     // Always go back to Tree Hole page
     router.push('/treehole')
 }
 </script>
 
+<style>
+/* Override global styles for this page */
+body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#app {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+}
+
+/* Ensure no pink background anywhere */
+html,
+body,
+#app,
+.share-thoughts-root {
+    background: white !important;
+}
+
+/* Override main.css styles */
+@media (min-width: 1024px) {
+    body {
+        display: block !important;
+        place-items: unset !important;
+    }
+
+    #app {
+        display: block !important;
+        grid-template-columns: none !important;
+        padding: 0 !important;
+    }
+}
+</style>
+
 <style scoped>
 .share-thoughts-root {
     --nav-h: 64px;
     min-height: calc(100vh - var(--nav-h));
-    padding: 84px 24px 24px;
+    padding: 84px 24px 0;
     background: white;
+    margin-bottom: 0;
 }
 
 .container {
@@ -108,7 +177,7 @@ const goBack = () => {
 .page-title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: #262c67;
+    color: #2c3e50;
     margin: 0 0 16px 0;
 }
 
@@ -153,7 +222,7 @@ const goBack = () => {
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #262c67;
+    border-color: #2c3e50;
 }
 
 .form-group textarea {
@@ -186,7 +255,7 @@ const goBack = () => {
 }
 
 .submit-btn {
-    background: #262c67;
+    background: #2c3e50;
     color: white;
     border: none;
     padding: 12px 24px;
@@ -198,7 +267,7 @@ const goBack = () => {
 }
 
 .submit-btn:hover {
-    background: #1a1f4a;
+    background: #1a252f;
 }
 
 /* Responsive Design */
@@ -206,15 +275,15 @@ const goBack = () => {
     .page-title {
         font-size: 2rem;
     }
-    
+
     .form-container {
         padding: 30px 20px;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
+
     .cancel-btn,
     .submit-btn {
         width: 100%;

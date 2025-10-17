@@ -99,7 +99,7 @@ onMounted(() => {
   if (authComputed.isAuthenticated.value) {
     // If already logged in, redirect to appropriate page
     if (authComputed.isAdmin.value) {
-      router.push('/profile')
+      router.push('/admin-dashboard')
     } else {
       router.push('/home')
     }
@@ -247,7 +247,7 @@ const register = async () => {
 
       // Stop loading immediately after success and redirect immediately
       isLoading.value = false
-      const target = (result.role === 'admin') ? '/profile' : '/home'
+      const target = (result.role === 'admin') ? '/admin-dashboard' : '/home'
       router.replace(target)
     } else {
       // Display different error messages based on error type
