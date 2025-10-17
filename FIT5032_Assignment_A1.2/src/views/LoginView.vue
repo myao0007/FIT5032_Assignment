@@ -18,7 +18,7 @@
           <div class="input-group">
             <input :type="showPassword ? 'text' : 'password'" class="form-control" v-model="formData.password"
               @input="validatePassword" :class="{ 'is-invalid': errors.password }" required />
-            <button type="button" class="btn btn-outline-secondary" @click="showPassword = !showPassword">
+            <button type="button" class="btn btn-outline-secondary" @click="togglePasswordVisibility">
               <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
             </button>
             <div class="invalid-feedback" v-if="errors.password">{{ errors.password }}</div>
@@ -159,16 +159,39 @@ const togglePasswordVisibility = () => {
 </script>
 
 
+<style>
+/* Global styles to prevent white bars */
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: linear-gradient(135deg, #f8d7da 0%, #f0b6c1 25%, #e8a8b8 50%, #e0a0b0 75%, #d898a8 100%) !important;
+  min-height: 100vh !important;
+}
+
+html {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: linear-gradient(135deg, #f8d7da 0%, #f0b6c1 25%, #e8a8b8 50%, #e0a0b0 75%, #d898a8 100%) !important;
+  min-height: 100vh !important;
+}
+
+#app {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: linear-gradient(135deg, #f8d7da 0%, #f0b6c1 25%, #e8a8b8 50%, #e0a0b0 75%, #d898a8 100%) !important;
+  min-height: 100vh !important;
+}
+</style>
+
 <style scoped>
 /* Background */
 .auth-bg {
   --nav-h: 64px;
-  min-height: calc(100vh - var(--nav-h));
+  min-height: 100vh;
   display: flex;
-  align-items: flex-start;
   align-items: center;
   justify-content: center;
-  padding: 84px 24px 24px;
+  padding: 84px 24px 0;
   background: linear-gradient(135deg, #f8d7da 0%, #f0b6c1 25%, #e8a8b8 50%, #e0a0b0 75%, #d898a8 100%);
 }
 
