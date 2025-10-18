@@ -47,7 +47,7 @@ watchEffect(() => {
 
 .text-block {
   max-width: 600px;
-  color: #1f2233;
+  color: #2c3e50;
   font-family: 'Georgia', serif;
   line-height: 1.8;
 }
@@ -55,7 +55,7 @@ watchEffect(() => {
 .welcome-title {
   margin-top: 2rem;
   text-align: center;
-  color: #151a4b;
+  color: #2c3e50;
   font-size: 2.4rem;
   font-weight: 800;
 }
@@ -63,13 +63,13 @@ watchEffect(() => {
 .she-big {
   font-size: 3rem;
   font-weight: bold;
-  color: #151a4b;
+  color: #2c3e50;
   margin-right: .3rem;
 }
 
 .she-normal {
   font-size: 1.8rem;
   font-weight: normal;
-  color: #151a4b;
+  color: #2c3e50;
 }
 </style>

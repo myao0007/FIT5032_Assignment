@@ -13,11 +13,10 @@
                     <!-- Left: Visual Section -->
                     <div class="event-visual">
                         <div class="visual-background">
+                            <img :src="`/images/events/${event.cover}`" :alt="event.title" class="event-image"
+                                @error="handleImageError" :onerror="`this.src='/images/1.jpg'`" />
                             <div class="visual-overlay">
-                                <div class="visual-text">
-                                    <h2 class="visual-title">{{ event.title.split(' – ')[0] }}</h2>
-                                    <p class="visual-subtitle">{{ event.title.split(' – ')[1] || 'Workshop' }}</p>
-                                </div>
+                                <!-- 移除所有文字，只保留时间标签 -->
                             </div>
                             <div class="date-tag">
                                 <span class="date-text">{{ event.date.split(', ')[0].split(' ')[0] }}</span>
@@ -78,6 +77,12 @@ onMounted(() => {
 // Navigate to event detail page
 const goToEventDetail = (eventId) => {
     router.push(`/event/${eventId}`)
+}
+
+// Handle image loading errors
+const handleImageError = (event) => {
+    console.log('Image failed to load, using fallback')
+    event.target.src = '/images/1.jpg'
 }
 </script>
 
@@ -150,6 +155,18 @@ const goToEventDetail = (eventId) => {
     border-radius: 20px;
     position: relative;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* 添加图片样式 */
+.event-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
 }
 
 .visual-overlay {
@@ -159,10 +176,7 @@ const goToEventDetail = (eventId) => {
     right: 0;
     bottom: 0;
     background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 40px;
+    z-index: 2;
 }
 
 .visual-text {
@@ -194,6 +208,7 @@ const goToEventDetail = (eventId) => {
     border-radius: 8px;
     text-align: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 3;
 }
 
 .date-text {
