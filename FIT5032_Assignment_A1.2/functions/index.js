@@ -174,3 +174,176 @@ async function sendEmailWithPDF(eventData, pdfBuffer, userEmail) {
   
   await sgMail.send(msg);
 }
+
+// TreeHole content moderation function
+exports.moderateTreeHoleContent = onCall(async (request) => {
+  try {
+    const { content, userId } = request.data;
+    
+    if (!content || !userId) {
+      throw new Error("Content and userId are required");
+    }
+    
+    logger.info(`Moderating content for user: ${userId}`);
+    
+    // 1. Basic content preprocessing
+    const processedContent = preprocessContent(content);
+    
+    // 2. AI content analysis using Gemini
+    const analysis = await analyzeContentWithGemini(processedContent);
+    
+    // 3. Risk assessment
+    const riskLevel = calculateRiskLevel(analysis);
+    
+    // 4. Determine action based on risk level
+    const result = determineModerationAction(content, riskLevel, analysis);
+    
+    logger.info(`Content moderation result: ${result.action} for user: ${userId}`);
+    
+    return result;
+  } catch (error) {
+    logger.error("Error moderating content:", error);
+    throw new Error("Failed to moderate content: " + error.message);
+  }
+});
+
+// Content preprocessing function
+function preprocessContent(content) {
+  // Remove extra whitespace and normalize text
+  return content.trim().replace(/\s+/g, ' ');
+}
+
+// Analyze content using Gemini AI
+async function analyzeContentWithGemini(content) {
+  try {
+    // This would integrate with Gemini AI API
+    // For now, we'll implement a basic analysis
+    const analysis = {
+      hateSpeech: checkHateSpeech(content),
+      selfHarm: checkSelfHarm(content),
+      inappropriate: checkInappropriateContent(content),
+      spam: checkSpam(content),
+      sentiment: analyzeSentiment(content)
+    };
+    
+    return analysis;
+  } catch (error) {
+    logger.error("Error analyzing content with Gemini:", error);
+    // Fallback to basic analysis
+    return {
+      hateSpeech: false,
+      selfHarm: false,
+      inappropriate: false,
+      spam: false,
+      sentiment: 'neutral'
+    };
+  }
+}
+
+// Basic content checks (can be enhanced with AI)
+function checkHateSpeech(content) {
+  const hateKeywords = ['hate', 'kill', 'die', 'stupid', 'ugly', 'worthless'];
+  const lowerContent = content.toLowerCase();
+  return hateKeywords.some(keyword => lowerContent.includes(keyword));
+}
+
+function checkSelfHarm(content) {
+  const selfHarmKeywords = ['suicide', 'kill myself', 'end it all', 'not worth living'];
+  const lowerContent = content.toLowerCase();
+  return selfHarmKeywords.some(keyword => lowerContent.includes(keyword));
+}
+
+function checkInappropriateContent(content) {
+  const inappropriateKeywords = ['sex', 'nude', 'explicit', 'adult'];
+  const lowerContent = content.toLowerCase();
+  return inappropriateKeywords.some(keyword => lowerContent.includes(keyword));
+}
+
+function checkSpam(content) {
+  // Check for excessive repetition or promotional content
+  const words = content.split(' ');
+  const uniqueWords = new Set(words);
+  const repetitionRatio = uniqueWords.size / words.length;
+  return repetitionRatio < 0.3 || content.includes('buy now') || content.includes('click here');
+}
+
+function analyzeSentiment(content) {
+  const positiveWords = ['happy', 'joy', 'love', 'grateful', 'blessed', 'amazing', 'wonderful'];
+  const negativeWords = ['sad', 'angry', 'frustrated', 'depressed', 'lonely', 'hurt', 'pain'];
+  
+  const lowerContent = content.toLowerCase();
+  const positiveCount = positiveWords.filter(word => lowerContent.includes(word)).length;
+  const negativeCount = negativeWords.filter(word => lowerContent.includes(word)).length;
+  
+  if (positiveCount > negativeCount) return 'positive';
+  if (negativeCount > positiveCount) return 'negative';
+  return 'neutral';
+}
+
+// Calculate risk level based on analysis
+function calculateRiskLevel(analysis) {
+  let riskScore = 0;
+  
+  if (analysis.hateSpeech) riskScore += 3;
+  if (analysis.selfHarm) riskScore += 4;
+  if (analysis.inappropriate) riskScore += 2;
+  if (analysis.spam) riskScore += 1;
+  if (analysis.sentiment === 'negative') riskScore += 1;
+  
+  if (riskScore >= 4) return 'high';
+  if (riskScore >= 2) return 'medium';
+  return 'low';
+}
+
+// Determine moderation action based on risk level
+function determineModerationAction(content, riskLevel, analysis) {
+  switch (riskLevel) {
+    case 'high':
+      return {
+        action: 'rejected',
+        reason: 'Content violates community guidelines',
+        suggestions: [],
+        riskLevel: 'high'
+      };
+    
+    case 'medium':
+      return {
+        action: 'needs_revision',
+        reason: 'Content needs minor adjustments',
+        suggestions: generateSuggestions(analysis),
+        riskLevel: 'medium'
+      };
+    
+    case 'low':
+    default:
+      return {
+        action: 'approved',
+        reason: 'Content meets community standards',
+        suggestions: [],
+        riskLevel: 'low'
+      };
+  }
+}
+
+// Generate suggestions for content improvement
+function generateSuggestions(analysis) {
+  const suggestions = [];
+  
+  if (analysis.hateSpeech) {
+    suggestions.push('Please avoid using language that could be hurtful to others');
+  }
+  if (analysis.selfHarm) {
+    suggestions.push('If you\'re struggling, please consider reaching out to a mental health professional');
+  }
+  if (analysis.inappropriate) {
+    suggestions.push('Please keep content appropriate for our community');
+  }
+  if (analysis.spam) {
+    suggestions.push('Please avoid promotional or repetitive content');
+  }
+  if (analysis.sentiment === 'negative') {
+    suggestions.push('Consider sharing your feelings in a constructive way');
+  }
+  
+  return suggestions;
+}

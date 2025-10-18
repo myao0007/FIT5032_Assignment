@@ -40,6 +40,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 import { db } from '@/firebase/config.js'
 import { authComputed } from '@/store/userAuth.js'
 
@@ -70,17 +71,53 @@ const submitThought = async () => {
     isSubmitting.value = true
 
     try {
-        // Save to Firestore
+        // Step 1: Content moderation
+        console.log('Starting content moderation...')
+        const functions = getFunctions()
+        const moderateContent = httpsCallable(functions, 'moderateTreeHoleContent')
+
+        const moderationResult = await moderateContent({
+            content: formData.value.content.trim(),
+            userId: authComputed.user.value?.uid || 'anonymous'
+        })
+
+        console.log('Content moderation result:', moderationResult.data)
+
+        // Step 2: Handle moderation result
+        if (moderationResult.data.action === 'rejected') {
+            alert(`Your post was not approved: ${moderationResult.data.reason}`)
+            isSubmitting.value = false
+            return
+        } else if (moderationResult.data.action === 'needs_revision') {
+            const suggestions = moderationResult.data.suggestions.join('\n• ')
+            const userChoice = confirm(
+                `Your post needs minor adjustments:\n\n• ${suggestions}\n\nWould you like to revise it or submit anyway?`
+            )
+
+            if (!userChoice) {
+                isSubmitting.value = false
+                return
+            }
+        }
+
+        // Step 3: Save to Firestore if approved
         const docRef = await addDoc(collection(db, 'treehole'), {
             keyword: formData.value.keyword.trim(),
             content: formData.value.content.trim(),
             author: authComputed.userEmail.value,
             createdAt: serverTimestamp(),
-            status: 'published'
+            moderationStatus: moderationResult.data.action,
+            riskLevel: moderationResult.data.riskLevel
         })
 
         console.log('Tree Hole post saved with ID:', docRef.id)
-        alert('Thank you for sharing your thoughts!')
+
+        // Show appropriate success message
+        if (moderationResult.data.action === 'approved') {
+            alert('Thank you for sharing your thoughts! Your post has been published.')
+        } else {
+            alert('Thank you for sharing your thoughts! Your post has been submitted for review.')
+        }
 
         // Clear form
         formData.value.keyword = ''
@@ -90,7 +127,11 @@ const submitThought = async () => {
         goBack()
     } catch (error) {
         console.error('Error saving Tree Hole post:', error)
-        alert('Sorry, there was an error saving your thoughts. Please try again.')
+        if (error.message.includes('moderateTreeHoleContent')) {
+            alert('Content moderation service is temporarily unavailable. Please try again later.')
+        } else {
+            alert('Sorry, there was an error saving your thoughts. Please try again.')
+        }
     } finally {
         isSubmitting.value = false
     }
