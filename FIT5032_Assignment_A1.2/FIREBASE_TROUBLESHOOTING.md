@@ -1,22 +1,22 @@
-# Firebase 问题解决指南
+# Firebase Troubleshooting Guide
 
-## 🔍 问题诊断
+## 🔍 Problem Diagnosis
 
-### 原始错误
+### Original Error
 ```
 FirebaseError: Missing or insufficient permissions
 Failed to load resource: the server responded with a status of 400
 ```
 
-### 问题原因
-1. **Firestore 规则过期** - 原规则限制在 2025年10月11日之前
-2. **权限不足** - 预约功能需要写入权限
+### Problem Causes
+1. **Firestore Rules Expired** - Original rules limited to before October 11, 2025
+2. **Insufficient Permissions** - Booking functionality requires write permissions
 
-## ✅ 解决方案
+## ✅ Solutions
 
-### 方案 1：更新 Firestore 规则（已实施）
+### Solution 1: Update Firestore Rules (Implemented)
 
-**更新后的规则** (`firestore.rules`):
+**Updated Rules** (`firestore.rules`):
 ```javascript
 rules_version = '2';
 
@@ -25,32 +25,32 @@ service cloud.firestore {
     
     // Allow read/write access to bookings collection for development
     match /bookings/{bookingId} {
-      allow read, write: if true; // 开发阶段允许所有操作
+      allow read, write: if true; // Allow all operations in development phase
     }
     
     // Allow read access to other collections
     match /{document=**} {
       allow read: if true;
-      allow write: if request.time < timestamp.date(2025, 12, 31); // 延长到年底
+      allow write: if request.time < timestamp.date(2025, 12, 31); // Extended to end of year
     }
   }
 }
 ```
 
-**部署命令**:
+**Deployment Command**:
 ```bash
 firebase deploy --only firestore:rules
 ```
 
-### 方案 2：智能服务切换（已实施）
+### Solution 2: Smart Service Switching (Implemented)
 
-如果 Firestore 仍然失败，系统会自动切换到模拟服务：
+If Firestore still fails, the system automatically switches to mock service:
 
-**智能服务选择器**:
+**Smart Service Selector**:
 ```javascript
 const getBookingService = async () => {
     try {
-        // 尝试使用 Firestore 服务
+        // Try using Firestore service
         await BookingService.checkEventCapacity(1, 1)
         console.log('Using Firestore service')
         return BookingService
@@ -61,91 +61,90 @@ const getBookingService = async () => {
 }
 ```
 
-## 🧪 测试步骤
+## 🧪 Testing Steps
 
-### 1. 测试 Firestore 服务
-1. 访问预约页面
-2. 填写预约表单
-3. 提交预约
-4. 查看控制台日志：
-   - ✅ `Using Firestore service` - Firestore 正常工作
-   - ⚠️ `Firestore failed, using mock service` - 自动切换到模拟服务
+### 1. Test Firestore Service
+1. Access booking page
+2. Fill out booking form
+3. Submit booking
+4. Check console logs:
+   - ✅ `Using Firestore service` - Firestore working normally
+   - ⚠️ `Firestore failed, using mock service` - Automatically switched to mock service
 
-### 2. 测试模拟服务
-如果看到 `(Mock Service)` 在成功消息中，说明正在使用模拟服务：
-- ✅ 预约功能仍然正常工作
-- ✅ 数据存储在内存中
-- ✅ 所有验证逻辑正常
+### 2. Test Mock Service
+If you see `(Mock Service)` in the success message, it means using mock service:
+- ✅ Booking functionality still works normally
+- ✅ Data stored in memory
+- ✅ All validation logic normal
 
-## 🔧 调试信息
+## 🔧 Debug Information
 
-### 控制台日志
-- `Using Firestore service` - 使用 Firestore
-- `Firestore failed, using mock service` - 使用模拟服务
-- `Mock booking created:` - 模拟预约创建
-- `Booking created with ID:` - 预约成功
+### Console Logs
+- `Using Firestore service` - Using Firestore
+- `Firestore failed, using mock service` - Using mock service
+- `Mock booking created:` - Mock booking creation
+- `Booking created with ID:` - Booking successful
 
-### 成功消息
-- `Booking confirmed! Your booking ID is: xxx (Firestore)` - Firestore 成功
-- `Booking confirmed! Your booking ID is: xxx (Mock Service)` - 模拟服务成功
+### Success Messages
+- `Booking confirmed! Your booking ID is: xxx (Firestore)` - Firestore success
+- `Booking confirmed! Your booking ID is: xxx (Mock Service)` - Mock service success
 
-## 🚀 部署状态
+## 🚀 Deployment Status
 
-### ✅ 已完成
-1. **Firestore 规则更新** - 已部署
-2. **智能服务切换** - 已实现
-3. **模拟服务** - 已创建
-4. **错误处理** - 已完善
+### ✅ Completed
+1. **Firestore Rules Updated** - Deployed
+2. **Smart Service Switching** - Implemented
+3. **Mock Service** - Created
+4. **Error Handling** - Improved
 
-### 📊 当前状态
-- **Firestore 规则**: ✅ 已更新并部署
-- **预约功能**: ✅ 可以正常工作
-- **FullCalendar**: ✅ 无需 API 密钥
-- **错误处理**: ✅ 自动降级到模拟服务
+### 📊 Current Status
+- **Firestore Rules**: ✅ Updated and deployed
+- **Booking Functionality**: ✅ Can work normally
+- **FullCalendar**: ✅ No API key required
+- **Error Handling**: ✅ Automatic fallback to mock service
 
-## 🎯 功能验证
+## 🎯 Function Verification
 
-### 预约流程测试
-1. **访问事件页面** - `/live`
-2. **点击事件** - 进入详情页
-3. **点击预约按钮** - "Book This Event"
-4. **查看日历** - FullCalendar 显示事件
-5. **填写表单** - 用户信息
-6. **提交预约** - 验证和保存
-7. **成功消息** - 显示预约ID
+### Booking Process Test
+1. **Access Event Page** - `/live`
+2. **Click Event** - Enter detail page
+3. **Click Booking Button** - "Book This Event"
+4. **View Calendar** - FullCalendar displays event
+5. **Fill Form** - User information
+6. **Submit Booking** - Validation and save
+7. **Success Message** - Display booking ID
 
-### 预期结果
-- ✅ 预约按钮可见
-- ✅ 预约页面加载
-- ✅ FullCalendar 显示事件
-- ✅ 表单验证正常
-- ✅ 预约提交成功
-- ✅ 成功消息显示
+### Expected Results
+- ✅ Booking button visible
+- ✅ Booking page loads
+- ✅ FullCalendar displays event
+- ✅ Form validation normal
+- ✅ Booking submission successful
+- ✅ Success message displayed
 
-## 🔄 故障排除
+## 🔄 Troubleshooting
 
-### 如果仍然失败
-1. **检查网络连接**
-2. **清除浏览器缓存**
-3. **检查 Firebase 项目状态**
-4. **查看控制台错误信息**
+### If Still Failing
+1. **Check network connection**
+2. **Clear browser cache**
+3. **Check Firebase project status**
+4. **View console error information**
 
-### 备用方案
-如果所有方案都失败，可以：
-1. 使用模拟服务进行演示
-2. 预约功能完全可用
-3. 所有验证逻辑正常
-4. 用户体验不受影响
+### Backup Solution
+If all solutions fail, you can:
+1. Use mock service for demonstration
+2. Booking functionality fully available
+3. All validation logic normal
+4. User experience unaffected
 
-## 📝 总结
+## 📝 Summary
 
-**问题已解决！** 🎉
+**Problem solved!** 🎉
 
-- ✅ Firestore 规则已更新
-- ✅ 智能服务切换已实现
-- ✅ 预约功能可以正常工作
-- ✅ FullCalendar 无需 API 密钥
-- ✅ 错误处理已完善
+- ✅ Firestore rules updated
+- ✅ Smart service switching implemented
+- ✅ Booking functionality can work normally
+- ✅ FullCalendar requires no API key
+- ✅ Error handling improved
 
-现在可以正常测试预约功能了！
-
+You can now test the booking functionality normally!

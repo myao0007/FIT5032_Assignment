@@ -1,24 +1,24 @@
-# 无 API 预约系统
+# No API Booking System
 
-## 🎯 概述
+## 🎯 Overview
 
-完全移除了 FullCalendar.io API 依赖，使用纯 HTML/CSS/JavaScript 实现预约功能。
+Completely removed FullCalendar.io API dependencies, using pure HTML/CSS/JavaScript to implement booking functionality.
 
-## ✅ 已移除的依赖
+## ✅ Removed Dependencies
 
-### FullCalendar 包
+### FullCalendar Packages
 - ❌ `@fullcalendar/core`
 - ❌ `@fullcalendar/daygrid` 
 - ❌ `@fullcalendar/timegrid`
 - ❌ `@fullcalendar/interaction`
 
-### 组件文件
-- ❌ `src/components/EventCalendar.vue` (已删除)
+### Component Files
+- ❌ `src/components/EventCalendar.vue` (deleted)
 
-## 🆕 新的实现
+## 🆕 New Implementation
 
 ### 1. SimpleEventCalendar.vue
-**纯 HTML/CSS 实现的事件显示组件**
+**Pure HTML/CSS event display component**
 
 ```vue
 <template>
@@ -35,7 +35,7 @@
                         <i class="fa-solid fa-clock"></i>
                         <span>{{ event.time }}</span>
                     </div>
-                    <!-- 更多详情... -->
+                    <!-- More details... -->
                 </div>
             </div>
         </div>
@@ -43,23 +43,23 @@
 </template>
 ```
 
-### 2. 功能特性
+### 2. Feature Set
 
-#### ✅ 保留的功能
-- 🎨 **美观的界面设计** - 渐变背景，圆角卡片
-- 📅 **事件信息显示** - 日期、时间、地点、容量
-- 📱 **响应式设计** - 移动端友好
-- 🔄 **实时状态显示** - Firestore 连接状态
-- 💾 **数据持久化** - 完全依赖 Firestore
+#### ✅ Retained Features
+- 🎨 **Beautiful Interface Design** - Gradient backgrounds, rounded cards
+- 📅 **Event Information Display** - Date, time, location, capacity
+- 📱 **Responsive Design** - Mobile-friendly
+- 🔄 **Real-time Status Display** - Firestore connection status
+- 💾 **Data Persistence** - Fully dependent on Firestore
 
-#### ❌ 移除的功能
-- 📅 **复杂日历视图** - 不再需要日历网格
-- 🖱️ **事件点击交互** - 简化了用户交互
-- 📊 **多事件显示** - 专注于单个事件预约
+#### ❌ Removed Features
+- 📅 **Complex Calendar Views** - No longer need calendar grid
+- 🖱️ **Event Click Interactions** - Simplified user interaction
+- 📊 **Multiple Event Display** - Focus on single event booking
 
-### 3. 技术实现
+### 3. Technical Implementation
 
-#### 纯 CSS 样式
+#### Pure CSS Styles
 ```css
 .event-card {
     display: flex;
@@ -70,7 +70,7 @@
 }
 ```
 
-#### 简单 JavaScript 逻辑
+#### Simple JavaScript Logic
 ```javascript
 const getEventDay = () => {
     if (!props.event?.date) return '--'
@@ -79,48 +79,48 @@ const getEventDay = () => {
 }
 ```
 
-## 🚀 优势
+## 🚀 Advantages
 
-### 1. 性能提升
-- ⚡ **更快的加载速度** - 无外部 API 调用
-- 📦 **更小的包体积** - 移除了 5 个依赖包
-- 🔄 **更快的渲染** - 纯 DOM 操作
+### 1. Performance Improvements
+- ⚡ **Faster Loading Speed** - No external API calls
+- 📦 **Smaller Bundle Size** - Removed 5 dependency packages
+- 🔄 **Faster Rendering** - Pure DOM operations
 
-### 2. 简化维护
-- 🛠️ **无 API 密钥管理** - 不需要注册或配置
-- 🔧 **更少的依赖** - 减少版本冲突风险
-- 📝 **更简单的代码** - 纯前端实现
+### 2. Simplified Maintenance
+- 🛠️ **No API Key Management** - No registration or configuration needed
+- 🔧 **Fewer Dependencies** - Reduced version conflict risks
+- 📝 **Simpler Code** - Pure frontend implementation
 
-### 3. 更好的控制
-- 🎨 **完全自定义样式** - 不受第三方组件限制
-- 🔧 **灵活的功能扩展** - 可以根据需求自由修改
-- 🐛 **更容易调试** - 所有代码都在项目中
+### 3. Better Control
+- 🎨 **Complete Custom Styling** - Not limited by third-party components
+- 🔧 **Flexible Feature Extension** - Can be freely modified based on requirements
+- 🐛 **Easier Debugging** - All code is in the project
 
-## 📊 对比分析
+## 📊 Comparison Analysis
 
-| 特性 | FullCalendar API | 无 API 版本 |
+| Feature | FullCalendar API | No API Version |
 |------|------------------|-------------|
-| 包大小 | ~200KB | ~5KB |
-| 加载时间 | 较慢 | 很快 |
-| 自定义性 | 有限 | 完全自由 |
-| 维护成本 | 高 | 低 |
-| 功能复杂度 | 高 | 简单 |
-| 依赖管理 | 需要 | 不需要 |
+| Bundle Size | ~200KB | ~5KB |
+| Loading Time | Slower | Very Fast |
+| Customization | Limited | Complete Freedom |
+| Maintenance Cost | High | Low |
+| Feature Complexity | High | Simple |
+| Dependency Management | Required | Not Required |
 
-## 🧪 测试功能
+## 🧪 Testing Features
 
-### 1. 访问预约页面
+### 1. Access Booking Page
 ```
 http://localhost:5175/booking/1
 ```
 
-### 2. 预期结果
-- ✅ 页面快速加载
-- ✅ 显示美观的事件卡片
-- ✅ Firestore 连接状态正常
-- ✅ 预约功能完全正常
+### 2. Expected Results
+- ✅ Page loads quickly
+- ✅ Beautiful event card display
+- ✅ Firestore connection status normal
+- ✅ Booking functionality works perfectly
 
-### 3. 控制台输出
+### 3. Console Output
 ```
 🔍 Testing Firestore connection...
 ✅ Firestore write test successful: doc-id
@@ -130,9 +130,9 @@ http://localhost:5175/booking/1
 ✅ Booking created in Firestore with ID: booking_xxx
 ```
 
-## 🎨 界面预览
+## 🎨 Interface Preview
 
-### 事件卡片设计
+### Event Card Design
 ```
 ┌─────────────────────────────────────┐
 │  Event Calendar                     │
@@ -149,19 +149,19 @@ http://localhost:5175/booking/1
 └─────────────────────────────────────┘
 ```
 
-## 🔧 自定义选项
+## 🔧 Customization Options
 
-### 1. 修改样式
-编辑 `SimpleEventCalendar.vue` 中的 CSS：
+### 1. Modify Styles
+Edit CSS in `SimpleEventCalendar.vue`:
 ```css
 .event-card {
     background: linear-gradient(135deg, #your-color1, #your-color2);
-    /* 自定义渐变背景 */
+    /* Custom gradient background */
 }
 ```
 
-### 2. 添加功能
-在组件中添加新的数据字段：
+### 2. Add Features
+Add new data fields in the component:
 ```vue
 <div class="detail-item">
     <i class="fa-solid fa-your-icon"></i>
@@ -169,40 +169,40 @@ http://localhost:5175/booking/1
 </div>
 ```
 
-### 3. 修改布局
-调整 flexbox 布局：
+### 3. Modify Layout
+Adjust flexbox layout:
 ```css
 .event-card {
-    flex-direction: column; /* 垂直布局 */
-    text-align: center;     /* 居中对齐 */
+    flex-direction: column; /* Vertical layout */
+    text-align: center;     /* Center alignment */
 }
 ```
 
-## 📋 部署清单
+## 📋 Deployment Checklist
 
-- [x] 移除 FullCalendar 依赖
-- [x] 删除 EventCalendar.vue 组件
-- [x] 创建 SimpleEventCalendar.vue
-- [x] 更新 BookingView.vue
-- [x] 测试预约功能
-- [x] 验证 Firestore 连接
-- [x] 检查响应式设计
+- [x] Remove FullCalendar dependencies
+- [x] Delete EventCalendar.vue component
+- [x] Create SimpleEventCalendar.vue
+- [x] Update BookingView.vue
+- [x] Test booking functionality
+- [x] Verify Firestore connection
+- [x] Check responsive design
 
-## 🎉 总结
+## 🎉 Summary
 
-**无 API 预约系统已成功实现！**
+**No API booking system successfully implemented!**
 
-### ✅ 主要优势
-- 🚀 **性能更优** - 无外部 API 依赖
-- 🛠️ **维护更简** - 纯前端实现
-- 🎨 **控制更强** - 完全自定义
-- 💾 **功能完整** - Firestore 数据持久化
+### ✅ Main Advantages
+- 🚀 **Better Performance** - No external API dependencies
+- 🛠️ **Simpler Maintenance** - Pure frontend implementation
+- 🎨 **Better Control** - Complete customization
+- 💾 **Complete Functionality** - Firestore data persistence
 
-### 🎯 核心功能
-- 📅 美观的事件显示
-- 📝 完整的预约表单
-- 💾 Firestore 数据保存
-- 📱 响应式设计
-- 🔄 实时状态监控
+### 🎯 Core Features
+- 📅 Beautiful event display
+- 📝 Complete booking form
+- 💾 Firestore data saving
+- 📱 Responsive design
+- 🔄 Real-time status monitoring
 
-**预约系统现在完全不依赖任何外部 API，同时保持了所有核心功能！** 🎉
+**The booking system now completely relies on no external APIs while maintaining all core functionality!** 🎉

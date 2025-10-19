@@ -1,123 +1,122 @@
-# FullCalendar.io - 无需 API 密钥！
+# FullCalendar.io - No API Key Required!
 
-## ✅ 好消息：完全免费使用
+## ✅ Good News: Completely Free to Use
 
-FullCalendar 的核心库是**开源且免费**的，**不需要注册账户或获取 API 密钥**就可以使用！
+FullCalendar's core library is **open source and free**, **no account registration or API key required** to use!
 
-## 📦 我们使用的包
+## 📦 Packages We Use
 
 ```json
 {
-  "@fullcalendar/core": "^6.1.19",         // 核心库 - MIT 许可证
-  "@fullcalendar/daygrid": "^6.1.19",      // 日视图 - MIT 许可证
-  "@fullcalendar/timegrid": "^6.1.19",     // 时间视图 - MIT 许可证
-  "@fullcalendar/interaction": "^6.1.19"   // 交互功能 - MIT 许可证
+  "@fullcalendar/core": "^6.1.19",         // Core library - MIT License
+  "@fullcalendar/daygrid": "^6.1.19",      // Day view - MIT License
+  "@fullcalendar/timegrid": "^6.1.19",     // Time view - MIT License
+  "@fullcalendar/interaction": "^6.1.19"   // Interaction features - MIT License
 }
 ```
 
-### ✅ 所有这些都是免费的，可以直接使用！
+### ✅ All of these are free and can be used directly!
 
-## 🆓 许可证说明
+## 🆓 License Information
 
-### MIT 许可证（我们使用的）
-- ✅ 完全免费
-- ✅ 无需注册
-- ✅ 无需 API 密钥
-- ✅ 可用于商业项目
-- ✅ 可用于学术项目
+### MIT License (What We Use)
+- ✅ Completely free
+- ✅ No registration required
+- ✅ No API key required
+- ✅ Can be used for commercial projects
+- ✅ Can be used for academic projects
 
-### 💰 付费许可证（我们不需要）
-只有以下高级插件需要付费：
-- ❌ Timeline 插件
-- ❌ Resource 插件
-- ❌ 某些企业级功能
+### 💰 Paid License (We Don't Need)
+Only the following premium plugins require payment:
+- ❌ Timeline plugin
+- ❌ Resource plugin
+- ❌ Some enterprise-level features
 
-**我们的项目完全不需要这些付费功能！**
+**Our project completely doesn't need these paid features!**
 
-## 🎯 当前实现的功能
+## 🎯 Current Implementation Features
 
-我们的预约系统使用的 FullCalendar 功能：
-1. **日历显示** - 显示事件在日历中的位置
-2. **月视图/周视图** - 切换不同的日历视图
-3. **事件显示** - 在日历上显示事件
-4. **响应式设计** - 适配移动设备
+Our booking system uses the following FullCalendar features:
+1. **Calendar Display** - Show events in calendar position
+2. **Month/Week View** - Switch between different calendar views
+3. **Event Display** - Display events on calendar
+4. **Responsive Design** - Adapt to mobile devices
 
-### 代码示例：
+### Code Example:
 ```javascript
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 
-// 无需 API 密钥，直接使用！
+// No API key required, use directly!
 const calendar = new Calendar(calendarEl.value, {
     plugins: [dayGridPlugin, timeGridPlugin],
     initialView: 'dayGridMonth',
-    events: [/* 你的事件数据 */]
+    events: [/* your event data */]
 })
 ```
 
-## 🚀 如何使用
+## 🚀 How to Use
 
-### 1. 安装（已完成）
+### 1. Installation (Completed)
 ```bash
 npm install @fullcalendar/core @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/interaction
 ```
 
-### 2. 导入（已完成）
+### 2. Import (Completed)
 ```javascript
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 ```
 
-### 3. 使用（已实现）
-见 `src/components/EventCalendar.vue`
+### 3. Usage (Implemented)
+See `src/components/EventCalendar.vue`
 
-## 🧪 测试
+## 🧪 Testing
 
-1. 启动开发服务器（已运行）:
+1. Start development server (already running):
    ```
-   访问: http://localhost:5175/
+   Access: http://localhost:5175/
    ```
 
-2. 测试预约功能:
-   - 访问 `/live` 页面
-   - 点击任意事件
-   - 点击 "Book This Event" 按钮
-   - 查看 FullCalendar 日历显示
+2. Test booking functionality:
+   - Access `/live` page
+   - Click any event
+   - Click "Book This Event" button
+   - View FullCalendar calendar display
 
-## 📚 更多信息
+## 📚 More Information
 
-- **官方文档**: https://fullcalendar.io/docs
+- **Official Documentation**: https://fullcalendar.io/docs
 - **GitHub**: https://github.com/fullcalendar/fullcalendar
-- **许可证**: MIT License (完全免费)
-- **示例**: https://fullcalendar.io/demos
+- **License**: MIT License (Completely Free)
+- **Examples**: https://fullcalendar.io/demos
 
-## ❓ 常见问题
+## ❓ Frequently Asked Questions
 
-### Q: 需要注册账户吗？
-**A**: ❌ 不需要！核心功能完全免费。
+### Q: Do I need to register an account?
+**A**: ❌ No! Core functionality is completely free.
 
-### Q: 需要 API 密钥吗？
-**A**: ❌ 不需要！直接安装使用即可。
+### Q: Do I need an API key?
+**A**: ❌ No! Install and use directly.
 
-### Q: 可以用于商业项目吗？
-**A**: ✅ 可以！MIT 许可证允许商业使用。
+### Q: Can it be used for commercial projects?
+**A**: ✅ Yes! MIT license allows commercial use.
 
-### Q: 有使用限制吗？
-**A**: ❌ 没有！免费版本没有功能限制。
+### Q: Are there usage limitations?
+**A**: ❌ No! Free version has no feature limitations.
 
-### Q: 需要付费吗？
-**A**: ❌ 不需要！除非你需要高级的 Timeline 或 Resource 插件。
+### Q: Do I need to pay?
+**A**: ❌ No! Unless you need advanced Timeline or Resource plugins.
 
-## 🎉 总结
+## 🎉 Summary
 
-**你可以放心使用 FullCalendar！**
-- ✅ 已安装完成
-- ✅ 无需注册
-- ✅ 无需 API 密钥
-- ✅ 完全免费
-- ✅ 可以立即使用
+**You can safely use FullCalendar!**
+- ✅ Installation completed
+- ✅ No registration required
+- ✅ No API key required
+- ✅ Completely free
+- ✅ Can be used immediately
 
-现在就可以测试预约功能了！🚀
-
+You can now test the booking functionality! 🚀

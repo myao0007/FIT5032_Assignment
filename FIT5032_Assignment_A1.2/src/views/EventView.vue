@@ -16,7 +16,7 @@
                             <img :src="`/images/events/${event.cover}`" :alt="event.title" class="event-image"
                                 @error="handleImageError" :onerror="`this.src='/images/1.jpg'`" />
                             <div class="visual-overlay">
-                                <!-- 移除所有文字，只保留时间标签 -->
+                                <!-- Remove all text, keep only time tag -->
                             </div>
                             <div class="date-tag">
                                 <span class="date-text">{{ event.date.split(', ')[0].split(' ')[0] }}</span>
@@ -158,7 +158,7 @@ const handleImageError = (event) => {
     overflow: hidden;
 }
 
-/* 添加图片样式 */
+/* Add image styles */
 .event-image {
     position: absolute;
     top: 0;

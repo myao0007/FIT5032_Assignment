@@ -151,7 +151,7 @@ const handleLogout = async () => {
   padding: 0;
   font-size: inherit;
   font-weight: 800;
-  /* 加粗字体 */
+  /* Bold font */
 }
 
 .logout-btn:hover {

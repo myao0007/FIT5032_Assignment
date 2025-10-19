@@ -1,68 +1,68 @@
-# Firestore 数据管理指南
+# Firestore Data Management Guide
 
-## 🎯 目标
+## 🎯 Objective
 
-确保所有预约数据都保存到 Firestore，以便后续使用和分析。
+Ensure all booking data is saved to Firestore for future use and analysis.
 
-## 📊 数据结构
+## 📊 Data Structure
 
-### 预约数据模型 (bookings 集合)
+### Booking Data Model (bookings collection)
 
 ```javascript
 {
-  // 自动生成的文档ID
+  // Auto-generated document ID
   id: "auto-generated-id",
   
-  // 事件信息
+  // Event information
   eventId: 1,
   eventTitle: "Reconnecting with Yourself – Healing Workshop",
   eventDate: "Oct 23, 2025",
   eventTime: "7:00 pm – 9:00 pm",
   eventLocation: "1 St Heliers St, Abbotsford VIC 3067",
   
-  // 参与者信息
+  // Attendee information
   attendeeInfo: {
     name: "Jane Doe",
     email: "jane@example.com",
     phone: "+61 123 456 789"
   },
   
-  // 预约详情
+  // Booking details
   notes: "I have dietary restrictions",
   status: "confirmed",
   
-  // 时间戳
+  // Timestamps
   createdAt: "2025-01-15T10:30:00.000Z",
   updatedAt: "2025-01-15T10:30:00.000Z"
 }
 ```
 
-## 🔧 功能特性
+## 🔧 Feature Set
 
-### 1. 强制 Firestore 连接
-- ✅ 预约前自动测试 Firestore 连接
-- ✅ 显示连接状态给用户
-- ✅ 连接失败时阻止预约
+### 1. Forced Firestore Connection
+- ✅ Automatically test Firestore connection before booking
+- ✅ Display connection status to users
+- ✅ Prevent booking when connection fails
 
-### 2. 数据验证
-- ✅ 必填字段验证
-- ✅ 邮箱格式验证
-- ✅ 重复预约检查
-- ✅ 事件容量检查
+### 2. Data Validation
+- ✅ Required field validation
+- ✅ Email format validation
+- ✅ Duplicate booking check
+- ✅ Event capacity check
 
-### 3. 错误处理
-- ✅ 详细的错误信息
-- ✅ 用户友好的错误提示
-- ✅ 控制台调试信息
+### 3. Error Handling
+- ✅ Detailed error messages
+- ✅ User-friendly error prompts
+- ✅ Console debugging information
 
-## 🧪 测试功能
+## 🧪 Testing Features
 
-### Firestore 连接测试
+### Firestore Connection Test
 ```javascript
-// 自动运行完整测试
+// Automatically run full test
 const testResult = await FirestoreTest.runFullTest()
 
-// 测试结果
+// Test results
 {
   success: true,
   connectionTest: { success: true, message: "..." },
@@ -71,63 +71,63 @@ const testResult = await FirestoreTest.runFullTest()
 }
 ```
 
-### 预约流程测试
-1. **连接检查** - 自动测试 Firestore 连接
-2. **数据验证** - 验证表单数据
-3. **重复检查** - 检查是否已预约
-4. **容量检查** - 检查事件是否已满
-5. **数据保存** - 保存到 Firestore
-6. **成功确认** - 显示预约ID
+### Booking Process Test
+1. **Connection Check** - Automatically test Firestore connection
+2. **Data Validation** - Validate form data
+3. **Duplicate Check** - Check if already booked
+4. **Capacity Check** - Check if event is full
+5. **Data Save** - Save to Firestore
+6. **Success Confirmation** - Display booking ID
 
-## 📈 数据用途
+## 📈 Data Usage
 
-### 1. 预约管理
-- 查看所有预约
-- 管理事件容量
-- 处理取消请求
+### 1. Booking Management
+- View all bookings
+- Manage event capacity
+- Handle cancellation requests
 
-### 2. 数据分析
-- 最受欢迎的事件
-- 用户参与度统计
-- 时间趋势分析
+### 2. Data Analysis
+- Most popular events
+- User engagement statistics
+- Time trend analysis
 
-### 3. 用户服务
-- 发送确认邮件
-- 提醒通知
-- 历史记录查询
+### 3. User Services
+- Send confirmation emails
+- Reminder notifications
+- History record queries
 
-## 🔍 监控和调试
+## 🔍 Monitoring and Debugging
 
-### 控制台日志
+### Console Logs
 ```javascript
-// 连接测试
+// Connection test
 🔍 Testing Firestore connection...
 ✅ Firestore write test successful: doc-id
 ✅ Firestore read test successful: 1 documents
 ✅ Firestore delete test successful
 
-// 预约创建
+// Booking creation
 ✅ Booking created in Firestore with ID: booking_xxx
 ```
 
-### 状态显示
-- 🟡 **Checking** - 正在检查连接
-- 🟢 **Connected** - Firestore 连接正常
-- 🔴 **Failed** - 连接失败
+### Status Display
+- 🟡 **Checking** - Checking connection
+- 🟢 **Connected** - Firestore connection normal
+- 🔴 **Failed** - Connection failed
 
-## 🚀 部署配置
+## 🚀 Deployment Configuration
 
-### Firestore 规则
+### Firestore Rules
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 预约集合权限
+    // Booking collection permissions
     match /bookings/{bookingId} {
-      allow read, write: if true; // 开发阶段
+      allow read, write: if true; // Development phase
     }
     
-    // 其他集合权限
+    // Other collection permissions
     match /{document=**} {
       allow read: if true;
       allow write: if request.time < timestamp.date(2025, 12, 31);
@@ -136,68 +136,67 @@ service cloud.firestore {
 }
 ```
 
-### 部署命令
+### Deployment Commands
 ```bash
-# 部署 Firestore 规则
+# Deploy Firestore rules
 firebase deploy --only firestore:rules
 
-# 部署整个项目
+# Deploy entire project
 firebase deploy
 ```
 
-## 📋 数据查询示例
+## 📋 Data Query Examples
 
-### 获取所有预约
+### Get All Bookings
 ```javascript
 const bookings = await BookingService.getEventBookings(eventId)
 ```
 
-### 获取用户预约历史
+### Get User Booking History
 ```javascript
 const userBookings = await BookingService.getUserBookings(email)
 ```
 
-### 检查事件容量
+### Check Event Capacity
 ```javascript
 const capacity = await BookingService.checkEventCapacity(eventId, 20)
 ```
 
-## 🎯 后续开发
+## 🎯 Future Development
 
-### 1. 管理界面
-- 预约列表查看
-- 批量操作功能
-- 数据导出功能
+### 1. Management Interface
+- Booking list view
+- Batch operation features
+- Data export functionality
 
-### 2. 通知系统
-- 预约确认邮件
-- 事件提醒通知
-- 取消通知
+### 2. Notification System
+- Booking confirmation emails
+- Event reminder notifications
+- Cancellation notifications
 
-### 3. 分析报告
-- 预约统计图表
-- 用户行为分析
-- 事件效果评估
+### 3. Analysis Reports
+- Booking statistics charts
+- User behavior analysis
+- Event effectiveness evaluation
 
-## ✅ 验证清单
+## ✅ Verification Checklist
 
-- [x] Firestore 连接正常
-- [x] 预约数据正确保存
-- [x] 数据验证完整
-- [x] 错误处理完善
-- [x] 用户界面友好
-- [x] 调试信息详细
-- [x] 规则配置正确
+- [x] Firestore connection normal
+- [x] Booking data correctly saved
+- [x] Data validation complete
+- [x] Error handling improved
+- [x] User interface friendly
+- [x] Debug information detailed
+- [x] Rules configuration correct
 
-## 🎉 总结
+## 🎉 Summary
 
-**预约系统现在完全依赖 Firestore！**
+**The booking system now completely relies on Firestore!**
 
-- ✅ 所有数据保存到 Firestore
-- ✅ 连接状态实时监控
-- ✅ 完整的错误处理
-- ✅ 数据可用于后续分析
-- ✅ 生产环境就绪
+- ✅ All data saved to Firestore
+- ✅ Connection status monitored in real-time
+- ✅ Complete error handling
+- ✅ Data available for future analysis
+- ✅ Production environment ready
 
-预约数据将永久保存，可以用于后续的功能开发和数据分析！
-
+Booking data will be permanently saved and can be used for future feature development and data analysis!

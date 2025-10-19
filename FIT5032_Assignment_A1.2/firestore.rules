@@ -5,13 +5,13 @@ service cloud.firestore {
     
     // Allow read/write access to bookings collection for development
     match /bookings/{bookingId} {
-      allow read, write: if true; // 开发阶段允许所有操作
+      allow read, write: if true; // Allow all operations in development phase
     }
     
     // Allow read access to other collections
     match /{document=**} {
       allow read: if true;
-      allow write: if request.time < timestamp.date(2025, 12, 31); // 延长到年底
+      allow write: if request.time < timestamp.date(2025, 12, 31); // Extended to end of year
     }
   }
 }

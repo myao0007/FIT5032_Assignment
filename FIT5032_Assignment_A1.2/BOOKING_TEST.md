@@ -1,149 +1,148 @@
-# 预约功能测试指南
+# Booking Functionality Testing Guide
 
-## 🧪 测试步骤
+## 🧪 Testing Steps
 
-### 1. 启动应用
+### 1. Start Application
 ```bash
 npm run dev
 ```
-访问: http://localhost:5173
+Access: http://localhost:5173
 
-### 2. 测试预约功能
+### 2. Test Booking Functionality
 
-#### 步骤 1: 访问事件页面
-1. 导航到 `/live` 页面
-2. 点击任意事件进入事件详情页面
+#### Step 1: Access Event Page
+1. Navigate to `/live` page
+2. Click any event to enter event detail page
 
-#### 步骤 2: 点击预约按钮
-1. 在事件详情页面，找到"Book This Event"按钮
-2. 点击按钮，应该跳转到预约页面 (`/booking/:id`)
+#### Step 2: Click Booking Button
+1. On event detail page, find "Book This Event" button
+2. Click button, should navigate to booking page (`/booking/:id`)
 
-#### 步骤 3: 填写预约表单
-1. 查看 FullCalendar 日历显示
-2. 填写预约表单:
-   - **姓名**: 输入你的姓名
-   - **邮箱**: 输入有效的邮箱地址
-   - **电话**: 可选，输入电话号码
-   - **特殊要求**: 可选，输入任何特殊要求
-   - **同意条款**: 必须勾选
+#### Step 3: Fill Booking Form
+1. View FullCalendar calendar display
+2. Fill out booking form:
+   - **Name**: Enter your name
+   - **Email**: Enter valid email address
+   - **Phone**: Optional, enter phone number
+   - **Special Requirements**: Optional, enter any special requirements
+   - **Agree to Terms**: Must be checked
 
-#### 步骤 4: 提交预约
-1. 点击"Confirm Booking"按钮
-2. 系统应该显示加载状态
-3. 预约成功后显示确认消息
+#### Step 4: Submit Booking
+1. Click "Confirm Booking" button
+2. System should display loading state
+3. Show confirmation message after successful booking
 
-## 🔍 功能验证
+## 🔍 Function Verification
 
-### FullCalendar.io API 集成
-- ✅ 日历正确显示事件
-- ✅ 事件在正确的日期和时间显示
-- ✅ 日历视图可以切换（月视图/周视图）
-- ✅ 点击事件有响应
+### FullCalendar.io API Integration
+- ✅ Calendar correctly displays events
+- ✅ Events display at correct date and time
+- ✅ Calendar views can be switched (month/week view)
+- ✅ Clicking events has response
 
-### 预约表单
-- ✅ 必填字段验证
-- ✅ 邮箱格式验证
-- ✅ 表单提交处理
-- ✅ 加载状态显示
+### Booking Form
+- ✅ Required field validation
+- ✅ Email format validation
+- ✅ Form submission handling
+- ✅ Loading state display
 
-### 数据验证
-- ✅ 重复预约检查
-- ✅ 事件容量检查
-- ✅ 数据格式验证
+### Data Validation
+- ✅ Duplicate booking check
+- ✅ Event capacity check
+- ✅ Data format validation
 
-## 🐛 常见问题
+## 🐛 Common Issues
 
-### 问题 1: FullCalendar 不显示
-**解决方案**: 检查控制台是否有 JavaScript 错误
+### Issue 1: FullCalendar Not Displaying
+**Solution**: Check console for JavaScript errors
 
-### 问题 2: 预约提交失败
-**解决方案**: 
-1. 检查 Firestore 连接
-2. 检查网络连接
-3. 查看浏览器控制台错误
+### Issue 2: Booking Submission Failed
+**Solution**: 
+1. Check Firestore connection
+2. Check network connection
+3. View browser console errors
 
-### 问题 3: 路由跳转失败
-**解决方案**: 检查路由配置是否正确
+### Issue 3: Route Navigation Failed
+**Solution**: Check if route configuration is correct
 
-## 📊 测试数据
+## 📊 Test Data
 
-### 测试事件
-- **事件 1**: Reconnecting with Yourself – Healing Workshop
-  - 日期: Oct 23, 2025
-  - 时间: 7:00 pm – 9:00 pm
-  - 地点: 1 St Heliers St, Abbotsford VIC 3067
+### Test Events
+- **Event 1**: Reconnecting with Yourself – Healing Workshop
+  - Date: Oct 23, 2025
+  - Time: 7:00 pm – 9:00 pm
+  - Location: 1 St Heliers St, Abbotsford VIC 3067
 
-### 测试用户信息
-- **姓名**: Test User
-- **邮箱**: test@example.com
-- **电话**: +61 123 456 789
+### Test User Information
+- **Name**: Test User
+- **Email**: test@example.com
+- **Phone**: +61 123 456 789
 
-## 🎯 预期结果
+## 🎯 Expected Results
 
-1. **预约按钮**: 在事件详情页面可见
-2. **预约页面**: 正确加载，显示日历和表单
-3. **FullCalendar**: 显示事件在正确的日期
-4. **表单提交**: 成功保存到 Firestore
-5. **成功消息**: 显示预约确认信息
+1. **Booking Button**: Visible on event detail page
+2. **Booking Page**: Loads correctly, displays calendar and form
+3. **FullCalendar**: Shows event on correct date
+4. **Form Submission**: Successfully saves to Firestore
+5. **Success Message**: Displays booking confirmation information
 
-## 🔧 调试信息
+## 🔧 Debug Information
 
-### 控制台日志
-预约功能会在控制台输出以下信息:
-- `Booking data:` - 预约数据
-- `Booking created with ID:` - 预约ID
-- `Event clicked:` - 点击事件时的信息
+### Console Logs
+Booking functionality will output the following information in console:
+- `Booking data:` - Booking data
+- `Booking created with ID:` - Booking ID
+- `Event clicked:` - Information when clicking events
 
-### Firestore 数据
-预约数据会保存到 `bookings` 集合中，包含:
-- `eventId`: 事件ID
-- `eventTitle`: 事件标题
-- `attendeeInfo`: 参与者信息
-- `status`: 预约状态
-- `createdAt`: 创建时间
+### Firestore Data
+Booking data will be saved to `bookings` collection, containing:
+- `eventId`: Event ID
+- `eventTitle`: Event title
+- `attendeeInfo`: Attendee information
+- `status`: Booking status
+- `createdAt`: Creation time
 
-## 🚀 部署测试
+## 🚀 Deployment Testing
 
-### 本地测试
-1. 确保 Firebase 项目已配置
-2. 确保 Firestore 数据库已启用
-3. 测试预约功能是否正常工作
+### Local Testing
+1. Ensure Firebase project is configured
+2. Ensure Firestore database is enabled
+3. Test if booking functionality works normally
 
-### 生产环境测试
-1. 部署到 Firebase Hosting
-2. 测试预约功能
-3. 验证数据是否正确保存
+### Production Environment Testing
+1. Deploy to Firebase Hosting
+2. Test booking functionality
+3. Verify data is correctly saved
 
-## 📝 测试报告模板
+## 📝 Test Report Template
 
 ```
-测试日期: [日期]
-测试人员: [姓名]
-测试环境: [本地/生产]
+Test Date: [Date]
+Test Personnel: [Name]
+Test Environment: [Local/Production]
 
-功能测试:
-- [ ] 预约按钮显示
-- [ ] 预约页面加载
-- [ ] FullCalendar 显示
-- [ ] 表单验证
-- [ ] 预约提交
-- [ ] 成功消息显示
+Function Testing:
+- [ ] Booking button display
+- [ ] Booking page loading
+- [ ] FullCalendar display
+- [ ] Form validation
+- [ ] Booking submission
+- [ ] Success message display
 
-问题记录:
-- [问题描述]
-- [解决方案]
+Issue Records:
+- [Issue Description]
+- [Solution]
 
-总体评价:
-[通过/不通过]
+Overall Evaluation:
+[Pass/Fail]
 ```
 
-## 🎉 成功标准
+## 🎉 Success Criteria
 
-预约功能被认为成功实现当:
-1. 用户可以点击预约按钮
-2. 预约页面正确加载并显示日历
-3. FullCalendar 正确显示事件
-4. 用户可以填写并提交预约表单
-5. 预约数据正确保存到 Firestore
-6. 用户收到预约确认消息
-
+Booking functionality is considered successfully implemented when:
+1. Users can click booking button
+2. Booking page loads correctly and displays calendar
+3. FullCalendar correctly displays events
+4. Users can fill and submit booking form
+5. Booking data correctly saves to Firestore
+6. Users receive booking confirmation message
